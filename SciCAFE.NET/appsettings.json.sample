@@ -1,0 +1,35 @@
+{
+  "Application": {
+    "Url": "http://localhost:5003",
+    "PathBase": "/"
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=scicafe2;Username=cysun;Password=abcd"
+  },
+  "Serilog": {
+    "Using": [
+      "Serilog.Sinks.File"
+    ],
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": {
+          "path": "D:/Temp/SciCAFE.NET/log.txt",
+          "rollingInterval": "Day",
+          "retainedFileCountLimit": null
+        }
+      }
+    ],
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "Enrich": [
+      "FromLogContext"
+    ]
+  },
+  "AllowedHosts": "*"
+}
