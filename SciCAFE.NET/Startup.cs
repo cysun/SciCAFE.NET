@@ -36,9 +36,11 @@ namespace SciCAFE.NET
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("IsAdmin", policyBuilder => policyBuilder
-                    .RequireClaim("IsAdmin", "True", "true", "TRUE"));
+                options.AddPolicy("IsAdministrator", policyBuilder =>
+                    policyBuilder.RequireClaim("IsAdministrator", "True", "true", "TRUE"));
             });
+
+            services.AddScoped<UserService>();
         }
 
         public void Configure(IApplicationBuilder app)
