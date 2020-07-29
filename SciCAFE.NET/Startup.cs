@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SciCAFE.NET.Models;
 using SciCAFE.NET.Services;
 using Serilog;
 
@@ -41,6 +43,8 @@ namespace SciCAFE.NET
             });
 
             services.AddScoped<UserService>();
+
+            services.AddAutoMapper(config => config.CreateMap<RegistrationInputModel, User>());
         }
 
         public void Configure(IApplicationBuilder app)

@@ -28,6 +28,8 @@ namespace SciCAFE.NET.Services
             return _db.Users.Where(u => u.Email.ToLower() == email.ToLower()).SingleOrDefault();
         }
 
+        public void AddUser(User user) => _db.Users.Add(user);
+
         public void SaveChanges() => _db.SaveChanges();
     }
 }
