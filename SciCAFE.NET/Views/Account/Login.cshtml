@@ -5,7 +5,14 @@
     <div class="col-md-6 offset-md-3">
         <div class="card">
             <div class="card-header">
-                <h3>Login</h3>
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                    </li>
+                </ul>
             </div>
             <div class="card-body">
                 <form method="post">
@@ -19,9 +26,9 @@
                     </div>
                     <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
                     <button class="btn btn-primary mr-2" name="button" value="login">Login</button>
-                    <a aps-controller="Account" asp-action="Register" class="btn btn-success float-right">Register</a>
                 </form>
             </div>
+            <div asp-validation-summary="ModelOnly" class="card-footer text-danger"></div>
         </div>
     </div>
 </div>

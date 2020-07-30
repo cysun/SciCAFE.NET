@@ -1,10 +1,10 @@
-﻿@{
-    ViewData["Title"] = "Register";
+﻿@model string
+@{
+    ViewData["Title"] = "Registration";
 }
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Registration</li>
-    </ol>
-</nav>
-
-<p>Registration compleeted.</p>
+<h3>Pending Email Verification</h3>
+<p>
+    Thank you for registering on SciCAFE. An email has been sent to the address
+    <em>@Model</em>. Please click on the link in the email to confirm your email address
+    and activate your account.
+</p>

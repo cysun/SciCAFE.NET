@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/darkly/bootstrap.min.css" />
+    <link id="themeCSS" rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/flatly/bootstrap.min.css" />
     @RenderSection("StyleSheets", required: false)
 </head>
 <body class="container">
@@ -36,6 +36,18 @@
                         </li>
                     }
                 </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Theme
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="javascript:setLightTheme()">Light</a>
+                            <a class="dropdown-item" href="javascript:setDarkTheme()">Dark</a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </nav>
     </header>
@@ -58,6 +70,36 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
             integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
             crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script>
+        function setDarkTheme() {
+            Cookies.set("theme", "dark", { expires: 14 });
+            $("#themeCSS").attr(
+                "href",
+                "https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/darkly/bootstrap.min.css"
+            );
+        }
+        function setLightTheme() {
+            Cookies.set("theme", "light", { expires: 14 });
+            $("#themeCSS").attr(
+                "href",
+                "https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/flatly/bootstrap.min.css"
+            );
+        }
+        $(function () {
+            var theme = Cookies.get("theme");
+            if (theme == "dark")
+                $("#themeCSS").attr(
+                    "href",
+                    "https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/darkly/bootstrap.min.css"
+                );
+            else if (theme == "light")
+                $("#themeCSS").attr(
+                    "href",
+                    "https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/flatly/bootstrap.min.css"
+                );
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

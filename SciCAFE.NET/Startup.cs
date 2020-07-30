@@ -48,6 +48,9 @@ namespace SciCAFE.NET
             services.AddScoped<UserService>();
 
             services.AddAutoMapper(config => config.CreateMap<RegistrationInputModel, User>());
+
+            services.Configure<EmailSettings>(Configuration.GetSection("Email"));
+            services.AddSingleton<EmailSender>();
         }
 
         public void Configure(IApplicationBuilder app)

@@ -188,5 +188,5 @@ CREATE INDEX "IX_Rewards_ProviderId" ON "Rewards" ("ProviderId");
 CREATE INDEX "IX_Rewards_Review_ReviewerId" ON "Rewards" ("Review_ReviewerId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20200730003641_InitialSchema', '3.1.4');
+VALUES ('20200730042433_InitialSchema', '3.1.4');
 

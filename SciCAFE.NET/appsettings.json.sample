@@ -6,6 +6,15 @@
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Database=scicafe2;Username=cysun;Password=abcd"
   },
+  "Email": {
+    "AppUrl": "http://localhost:5003",
+    "Host": "localhost",
+    "Port": 25,
+    "Username": "cysun@localhost.localdomain",
+    "Password": "abcd",
+    "SenderName": "SciCAFE Admin",
+    "SenderEmail": "scicafe@localhost.localdomain"
+  },
   "Serilog": {
     "Using": [
       "Serilog.Sinks.File"
