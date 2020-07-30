@@ -20,7 +20,7 @@ namespace SciCAFE.NET.Models
 
         public List<RewardEvent> RewardEvents { get; set; } = new List<RewardEvent>();
 
-        public int ProviderId { get; set; }
+        public string ProviderId { get; set; }
         public User Provider { get; set; }
 
         public DateTime? SubmitDate { get; set; }

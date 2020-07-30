@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SciCAFE.NET.Models;
 
 namespace SciCAFE.NET.Services
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<Models.Program> Programs { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
@@ -20,8 +20,9 @@ namespace SciCAFE.NET.Services
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Tag>().HasAlternateKey(t => t.Name);
-            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
             modelBuilder.Entity<Models.Program>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<Models.Program>().Property(p => p.IsDeleted).HasDefaultValue(false);
             modelBuilder.Entity<Event>().HasQueryFilter(e => !e.IsDeleted);

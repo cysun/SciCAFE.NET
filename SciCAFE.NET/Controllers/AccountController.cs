@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SciCAFE.NET.Models;
@@ -15,15 +17,15 @@ namespace SciCAFE.NET.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserService _userService;
+        private readonly SignInManager<User> _signInManager;
 
         private readonly IMapper _mapper;
 
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserService userService, IMapper mapper, ILogger<AccountController> logger)
+        public AccountController(SignInManager<User> signInManager, IMapper mapper, ILogger<AccountController> logger)
         {
-            _userService = userService;
+            _signInManager = signInManager;
             _mapper = mapper;
             _logger = logger;
         }
@@ -31,29 +33,39 @@ namespace SciCAFE.NET.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View(new LoginInputModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAsync(string email, string password, string returnUrl)
+        public async Task<IActionResult> LoginAsync(LoginInputModel input, string returnUrl)
         {
-            var user = _userService.Authenticate(email, password);
-            if (user == null)
-                return RedirectToAction(nameof(Login));
+            if (!ModelState.IsValid) return View(input);
 
-            var identity = new ClaimsIdentity(user.ToClaims(), CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties();
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity), authProperties);
-
-            return string.IsNullOrWhiteSpace(returnUrl) ? RedirectToAction("Index", "Home")
-                : (IActionResult)LocalRedirect(returnUrl);
+            returnUrl = returnUrl ?? Url.Content("~/");
+            var result = await _signInManager.PasswordSignInAsync(input.Email, input.Password, input.RememberMe, lockoutOnFailure: false);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("{email} signed in", input.Email);
+                return LocalRedirect(returnUrl);
+            }
+            else if (result.IsLockedOut)
+            {
+                _logger.LogWarning("{email} account is locked out", input.Email);
+                return LocalRedirect(Url.Content("~/")); // XXX should display error message
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(input);
+            }
         }
 
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            var name = User.Identity.Name;
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("{user} signed out", name);
+            return LocalRedirect(Url.Content("~/"));
         }
 
         [HttpGet]
@@ -68,9 +80,9 @@ namespace SciCAFE.NET.Controllers
             if (!ModelState.IsValid) return View(input);
 
             var user = _mapper.Map<User>(input);
-            user.Hash = BCrypt.Net.BCrypt.HashPassword(input.Password);
-            _userService.AddUser(user);
-            _userService.SaveChanges();
+            // user.Hash = BCrypt.Net.BCrypt.HashPassword(input.Password);
+            // _userService.AddUser(user);
+            // _userService.SaveChanges();
             _logger.LogInformation("{email} registered", input.Email);
 
             return View("RegisterStatus");
@@ -80,5 +92,19 @@ namespace SciCAFE.NET.Controllers
         {
             return View();
         }
+    }
+
+    public class LoginInputModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
     }
 }

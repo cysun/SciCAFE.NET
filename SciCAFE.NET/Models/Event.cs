@@ -24,7 +24,7 @@ namespace SciCAFE.NET.Models
 
         public List<EventTag> EventTags { get; set; } = new List<EventTag>();
 
-        public int OrganizerId { get; set; }
+        public string OrganizerId { get; set; }
         public User Organizer { get; set; }
 
         public DateTime? SubmitDate { get; set; }
@@ -53,7 +53,7 @@ namespace SciCAFE.NET.Models
         public int EventId { get; set; }
         public Event Event { get; set; }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
     }
 }

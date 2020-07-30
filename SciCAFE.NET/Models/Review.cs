@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace SciCAFE.NET.Models
 
         public DateTime Timestamp { get; set; }
 
-        public int ReviewerId { get; set; }
+        public string ReviewerId { get; set; }
         public User Reviewer { get; set; }
     }
 }
