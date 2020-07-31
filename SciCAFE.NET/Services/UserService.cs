@@ -17,19 +17,15 @@ namespace SciCAFE.NET.Services
             _db = db;
         }
 
-        public User Authenticate(string email, string password)
+        public List<User> GetUsers()
         {
-            var user = GetUser(email);
-            // return user != null && BCrypt.Net.BCrypt.Verify(password, user.Hash) ? user : null;
-            return user;
+            return _db.Users.OrderBy(u => u.FirstName).ThenBy(u => u.LastName).ToList();
         }
 
-        public User GetUser(string email)
+        public User GetUser(string id)
         {
-            return _db.Users.Where(u => u.Email.ToLower() == email.ToLower()).SingleOrDefault();
+            return _db.Users.Find(id);
         }
-
-        public void AddUser(User user) => _db.Users.Add(user);
 
         public void SaveChanges() => _db.SaveChanges();
     }

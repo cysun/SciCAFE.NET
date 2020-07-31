@@ -41,4 +41,27 @@ namespace SciCAFE.NET.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
+
+    public class NewUserInputModel : RegistrationInputModel
+    {
+        [Display(Name = "Administrator")]
+        public bool IsAdministrator { get; set; }
+
+        [Display(Name = "Event Organizer")]
+        public bool IsEventOrganizer { get; set; }
+
+        [Display(Name = "Reward Provider")]
+        public bool IsRewardProvider { get; set; }
+    }
+
+    public class EditUserInputModel : NewUserInputModel
+    {
+        [DataType(DataType.Password)]
+        new public string Password { get; set; }
+
+        [Display(Name = "Email Confirmed")]
+        public bool EmailConfirmed { get; set; }
+
+        public string Name => $"{FirstName} {LastName}";
+    }
 }

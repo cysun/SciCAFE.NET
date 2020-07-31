@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SciCAFE.NET.Models;
+using SciCAFE.NET.Security.Constants;
 using SciCAFE.NET.Services;
 
 namespace ConsoleManager
@@ -101,11 +102,11 @@ namespace ConsoleManager
                 {
                     List<Claim> claims = new List<Claim>();
                     if (user.IsAdministrator)
-                        claims.Add(new Claim(nameof(User.IsAdministrator), "True"));
+                        claims.Add(new Claim(ClaimType.IsAdministrator, "True"));
                     if (user.IsEventOrganizer)
-                        claims.Add(new Claim(nameof(User.IsEventOrganizer), "True"));
+                        claims.Add(new Claim(ClaimType.IsEventOrganizer, "True"));
                     if (user.IsRewardProvider)
-                        claims.Add(new Claim(nameof(User.IsRewardProvider), "True"));
+                        claims.Add(new Claim(ClaimType.IsRewardProvider, "True"));
                     if (claims.Count > 0)
                         await userManager.AddClaimsAsync(user, claims);
 

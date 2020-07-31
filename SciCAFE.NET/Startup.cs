@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SciCAFE.NET.Models;
+using SciCAFE.NET.Security.Constants;
 using SciCAFE.NET.Services;
 using Serilog;
 
@@ -41,13 +43,13 @@ namespace SciCAFE.NET
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("IsAdministrator", policyBuilder =>
-                    policyBuilder.RequireClaim("IsAdministrator", "True", "true", "TRUE"));
+                options.AddPolicy(Policy.IsAdministrator, policyBuilder =>
+                    policyBuilder.RequireClaim(ClaimType.IsAdministrator, "True", "true", "TRUE"));
             });
 
             services.AddScoped<UserService>();
 
-            services.AddAutoMapper(config => config.CreateMap<RegistrationInputModel, User>());
+            services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
             services.AddSingleton<EmailSender>();

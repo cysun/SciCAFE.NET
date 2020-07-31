@@ -1,0 +1,70 @@
+﻿@model NewUserInputModel
+@{
+    ViewData["Title"] = "New User";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
+        <li class="breadcrumb-item active">New User</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    <div class="form-group">
+                        <label asp-for="FirstName">First Name</label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName">Last Name</label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <small id="passwordHelp" class="form-text text-muted">
+                            Passwords must be at least six characters long, and contain at least one
+                            uppercase character, one lowercase character, a digit, and a non-alphanumeric
+                            character.
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword">Confirm Password</label>
+                        <input asp-for="ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <input asp-for="IsAdministrator" class="form-check-input">
+                        <label asp-for="IsAdministrator" class="form-check-label"></label>
+                    </div>
+                    <div class="form-group form-check">
+                        <input asp-for="IsEventOrganizer" class="form-check-input">
+                        <label asp-for="IsEventOrganizer" class="form-check-label"></label>
+                    </div>
+                    <div class="form-group form-check">
+                        <input asp-for="IsRewardProvider" class="form-check-input">
+                        <label asp-for="IsRewardProvider" class="form-check-label"></label>
+                    </div>
+                    <a class="btn btn-secondary mr-2" asp-action="Index">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="card-footer text-danger"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
