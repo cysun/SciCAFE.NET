@@ -15,6 +15,8 @@ namespace SciCAFE.NET.Services
             CreateMap<NewUserInputModel, User>();
             CreateMap<User, EditUserInputModel>();
             CreateMap<EditUserInputModel, User>();
+            CreateMap<ProgramInputModel, Models.Program>();
+            CreateMap<Models.Program, ProgramInputModel>();
         }
     }
 }

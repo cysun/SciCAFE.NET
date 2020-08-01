@@ -64,4 +64,21 @@ namespace SciCAFE.NET.Models
 
         public string Name => $"{FirstName} {LastName}";
     }
+
+    public class ProgramInputModel
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        [Display(Name = "Short Name")]
+        [StringLength(50, ErrorMessage = "The {0} value cannot exceed {1} characters. ")]
+        public string ShortName { get; set; }
+
+        public string Description { get; set; }
+
+        [MaxLength(255)]
+        [DataType(DataType.Url)]
+        public string Website { get; set; }
+    }
 }

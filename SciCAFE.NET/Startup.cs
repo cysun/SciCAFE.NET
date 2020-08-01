@@ -47,12 +47,13 @@ namespace SciCAFE.NET
                     policyBuilder.RequireClaim(ClaimType.IsAdministrator, "True", "true", "TRUE"));
             });
 
-            services.AddScoped<UserService>();
-
             services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
             services.AddSingleton<EmailSender>();
+
+            services.AddScoped<UserService>();
+            services.AddScoped<ProgramService>();
         }
 
         public void Configure(IApplicationBuilder app)

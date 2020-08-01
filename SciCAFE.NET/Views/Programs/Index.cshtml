@@ -1,0 +1,35 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model List<SciCAFE.NET.Models.Program>
+@{
+    ViewData["Title"] = "Programs";
+}
+
+@if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+{
+    <p class="text-right"><a asp-action="Add" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i></a></p>
+}
+
+<div class="row">
+    @foreach (var program in Model)
+    {
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    @program.ShortName
+                    @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+                    {
+                        <a class="btn btn-sm btn-secondary float-right"
+                           asp-action="Edit" asp-route-id="@program.Id"><i class="fas fa-edit"></i></a>
+                    }
+                </div>
+                <div class="card-body">
+                    @Html.Raw(program.Description)
+                    @if (!string.IsNullOrEmpty(program.Website))
+                    {
+                        <a href="@program.Website" class="btn btn-primary">Learn More</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -13,10 +13,13 @@ namespace SciCAFE.NET.Models
         [Required, MaxLength(255)]
         public string Name { get; set; }
 
-        [Required, MaxLength(255)]
+        [Required, MaxLength(50)]
         public string ShortName { get; set; }
 
         public string Description { get; set; }
+
+        [MaxLength(255)]
+        public string Website { get; set; }
 
         public bool IsDeleted { get; set; }
     }

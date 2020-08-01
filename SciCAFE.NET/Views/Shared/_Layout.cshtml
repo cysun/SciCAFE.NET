@@ -27,6 +27,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Programs" asp-action="Index">Programs</a></li>
                     @if (User.Identity.IsAuthenticated)
                     {
                         @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
@@ -64,11 +65,9 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="p-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main" class="my-3">
+        @RenderBody()
+    </main>
     <footer class="footer text-muted">
         <p class="text-center">
             Copyright &copy; SciCAFE 2020.
