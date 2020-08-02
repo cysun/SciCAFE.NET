@@ -4,16 +4,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
+    <title>SciCAFE - @ViewData["Title"]</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
           integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
           crossorigin="anonymous" />
-    <link id="themeCSS" rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/flatly/bootstrap.min.css" />
+    <link id="themeCSS" rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/cerulean/bootstrap.min.css" />
     @RenderSection("StyleSheets", required: false)
 </head>
 <body class="container">
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <a class="navbar-brand" href="@Context.Request.PathBase/">SciCAFE</a>
             <button class="navbar-toggler"
                     type="button"
@@ -28,14 +28,17 @@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Programs" asp-action="Index">Programs</a></li>
+                    @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Users" asp-action="Index">Users</a>
+                        </li>
+                    }
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About Us</a></li>
+                </ul>
+                <ul class="navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Users" asp-action="Index">Users</a>
-                            </li>
-                        }
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Profile">Profile</a>
                         </li>
@@ -49,18 +52,6 @@
                             <a class="nav-link" asp-controller="Account" asp-action="Login">Sign In</a>
                         </li>
                     }
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false">
-                            Theme
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="javascript:setLightTheme()">Light</a>
-                            <a class="dropdown-item" href="javascript:setDarkTheme()">Dark</a>
-                        </div>
-                    </li>
                 </ul>
             </div>
         </nav>
@@ -84,32 +75,13 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
     <script>
-        function setDarkTheme() {
-            Cookies.set("theme", "dark", { expires: 14 });
-            $("#themeCSS").attr(
-                "href",
-                "https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/darkly/bootstrap.min.css"
-            );
-        }
-        function setLightTheme() {
-            Cookies.set("theme", "light", { expires: 14 });
-            $("#themeCSS").attr(
-                "href",
-                "https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/flatly/bootstrap.min.css"
-            );
-        }
         $(function () {
-            var theme = Cookies.get("theme");
-            if (theme == "dark")
-                $("#themeCSS").attr(
-                    "href",
-                    "https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/darkly/bootstrap.min.css"
-                );
-            else if (theme == "light")
-                $("#themeCSS").attr(
-                    "href",
-                    "https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/flatly/bootstrap.min.css"
-                );
+            $("a.nav-link").each(function () {
+                if ($(this).text() == '@ViewData["Title"]')
+                    $(this).closest("li.nav-item").addClass("active");
+                else
+                    $(this).closest("li.nav-item").removeClass("active");
+            });
         });
     </script>
     @RenderSection("Scripts", required: false)
