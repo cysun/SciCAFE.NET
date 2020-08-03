@@ -1,0 +1,27 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Add Category";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Event Categories</a></li>
+        <li class="breadcrumb-item active">New Category</li>
+    </ol>
+</nav>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AdditionalInfo"></label>
+        <input asp-for="AdditionalInfo" class="form-control">
+        <span asp-validation-for="AdditionalInfo" class="text-danger"></span>
+        <small class="form-text text-muted">Additional Information will be shown in parenthesis after Name</small>
+    </div>
+    <a class="btn btn-secondary mr-2" asp-action="Index">Cancel</a>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>

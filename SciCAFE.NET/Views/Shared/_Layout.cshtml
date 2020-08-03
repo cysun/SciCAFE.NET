@@ -14,7 +14,10 @@
 <body class="container">
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a class="navbar-brand" href="@Context.Request.PathBase/">SciCAFE</a>
+            <a class="navbar-brand" href="@Context.Request.PathBase/">
+                <img src="~/assets/science.svg" width="30" height="30" alt="" class="d-inline-block align-top" loading="lazy">
+                SciCAFE
+            </a>
             <button class="navbar-toggler"
                     type="button"
                     data-toggle="collapse"
@@ -69,7 +72,7 @@
     <main role="main" class="my-3">
         @RenderBody()
     </main>
-    <footer class="footer text-center text-muted">
+    <footer class="footer text-center text-muted mb-3">
         <div>Copyright &copy; SciCAFE 2020.</div>
         <div>
             Icons made by <a href="https://www.flaticon.com/authors/good-ware" title="Good Ware">Good Ware</a>

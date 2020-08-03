@@ -1,0 +1,32 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model List<Theme>
+@{
+    ViewData["Title"] = "Themes";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Event Themes</li>
+        @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+        {
+            <li class="ml-auto"><a asp-action="Add" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus"></i></a></li>
+        }
+    </ol>
+</nav>
+
+@foreach (var theme in Model)
+{
+    <div class="card">
+        <div class="card-header">
+            @theme.Name
+            @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+            {
+                <a class="btn btn-sm btn-secondary float-right"
+                   asp-action="Edit" asp-route-id="@theme.Id"><i class="fas fa-edit"></i></a>
+            }
+        </div>
+        <div class="card-body">
+            @Html.Raw(theme.Description)
+        </div>
+    </div>
+}

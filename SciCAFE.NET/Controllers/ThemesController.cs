@@ -13,14 +13,14 @@ using SciCAFE.NET.Services;
 namespace SciCAFE.NET.Controllers
 {
     [Authorize(Policy = Policy.IsAdministrator)]
-    public class CategoriesController : Controller
+    public class ThemesController : Controller
     {
         private readonly EventService _eventService;
 
         private readonly IMapper _mapper;
-        private readonly ILogger<CategoriesController> _logger;
+        private readonly ILogger<ThemesController> _logger;
 
-        public CategoriesController(EventService eventService, IMapper mapper, ILogger<CategoriesController> logger)
+        public ThemesController(EventService eventService, IMapper mapper, ILogger<ThemesController> logger)
         {
             _eventService = eventService;
             _mapper = mapper;
@@ -30,29 +30,29 @@ namespace SciCAFE.NET.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View(_eventService.GetCategories());
+            return View(_eventService.GetThemes());
         }
 
         [HttpGet]
         public IActionResult Add()
         {
-            return View(new Category());
+            return View(new Theme());
         }
 
         [HttpPost]
-        public IActionResult Add(Category input)
+        public IActionResult Add(Theme input)
         {
             if (!ModelState.IsValid) return View(input);
 
-            var category = new Category()
+            var theme = new Theme()
             {
                 Name = input.Name,
-                AdditionalInfo = input.AdditionalInfo
+                Description = input.Description
             };
-            _eventService.AddCategory(category);
+            _eventService.AddTheme(theme);
             _eventService.SaveChanges();
 
-            _logger.LogInformation("{user} added category {category}", User.Identity.Name, category.Name);
+            _logger.LogInformation("{user} added theme {theme}", User.Identity.Name, theme.Name);
 
             return RedirectToAction("Index");
         }
@@ -60,23 +60,23 @@ namespace SciCAFE.NET.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var category = _eventService.GetCategory(id);
-            if (category == null) return NotFound();
+            var theme = _eventService.GetTheme(id);
+            if (theme == null) return NotFound();
 
-            return View(category);
+            return View(theme);
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, Category input)
+        public IActionResult Edit(int id, Theme input)
         {
             if (!ModelState.IsValid) return View(input);
 
-            var category = _eventService.GetCategory(id);
-            category.Name = input.Name;
-            category.AdditionalInfo = input.AdditionalInfo;
+            var theme = _eventService.GetTheme(id);
+            theme.Name = input.Name;
+            theme.Description = input.Description;
             _eventService.SaveChanges();
 
-            _logger.LogInformation("{user} edited category {category}", User.Identity.Name, category.Name);
+            _logger.LogInformation("{user} edited theme {theme}", User.Identity.Name, theme.Name);
 
             return RedirectToAction("Index");
         }

@@ -11,11 +11,11 @@ namespace SciCAFE.NET.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
+        [Required, MaxLength(255)]
         public string Name { get; set; }
 
         [MaxLength(255)]
+        [Display(Name = "Additional Information")]
         public string AdditionalInfo { get; set; }
 
         public bool IsDeleted { get; set; }
@@ -25,8 +25,7 @@ namespace SciCAFE.NET.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
+        [Required, MaxLength(255)]
         public string Name { get; set; }
 
         public string Description { get; set; }

@@ -4,10 +4,15 @@
     ViewData["Title"] = "Programs";
 }
 
-@if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
-{
-    <p class="text-right"><a asp-action="Add" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i></a></p>
-}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Programs</li>
+        @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+        {
+            <li class="ml-auto"><a asp-action="Add" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus"></i></a></li>
+        }
+    </ol>
+</nav>
 
 <div class="row">
     @foreach (var program in Model)

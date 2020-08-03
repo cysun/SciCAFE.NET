@@ -1,25 +1,38 @@
-﻿@model List<Category>
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model List<Category>
 @{
     ViewData["Title"] = "Events";
 }
 
-<nav aria-label="breadcrumb">
+<nav>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Events</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Categories</li>
+        <li class="breadcrumb-item active">Event Categories</li>
+        @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+        {
+            <li class="ml-auto"><a asp-action="Add" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus"></i></a></li>
+        }
     </ol>
 </nav>
 
 <table class="table table-hover">
-    <thead>
-        <tr><th>Name</th><th>Additonal Information</th></tr>
-    </thead>
     <tbody>
         @foreach (var category in Model)
         {
             <tr>
-                <td>@category.Name</td>
-                <td>@category.AdditionalInfo</td>
+                <td>
+                    @category.Name
+                    @if (!string.IsNullOrEmpty(category.AdditionalInfo))
+                    {
+                        <span>(@category.AdditionalInfo)</span>
+                    }
+                </td>
+                @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+                {
+                    <td>
+                        <a class="btn btn-sm btn-secondary float-right"
+                           asp-action="Edit" asp-route-id="@category.Id"><i class="fas fa-edit"></i></a>
+                    </td>
+                }
             </tr>
         }
     </tbody>
