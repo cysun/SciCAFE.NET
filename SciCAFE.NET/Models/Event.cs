@@ -7,6 +7,33 @@ using System.Threading.Tasks;
 
 namespace SciCAFE.NET.Models
 {
+    public class Category
+    {
+        public int Id { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string Name { get; set; }
+
+        [MaxLength(255)]
+        public string AdditionalInfo { get; set; }
+
+        public bool IsDeleted { get; set; }
+    }
+
+    public class Theme
+    {
+        public int Id { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public bool IsDeleted { get; set; }
+    }
+
     public class Event
     {
         public int Id { get; set; }
@@ -22,7 +49,10 @@ namespace SciCAFE.NET.Models
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-        public List<EventTag> EventTags { get; set; } = new List<EventTag>();
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
+
+        public List<EventTheme> EventThemes { get; set; }
 
         public string OrganizerId { get; set; }
         public User Organizer { get; set; }
@@ -36,14 +66,14 @@ namespace SciCAFE.NET.Models
         public bool IsDeleted { get; set; }
     }
 
-    [Table("EventTags")]
-    public class EventTag
+    [Table("EventThemes")]
+    public class EventTheme
     {
         public int EventId { get; set; }
         public Event Event { get; set; }
 
-        public int TagId { get; set; }
-        public Tag Tag { get; set; }
+        public int ThemeId { get; set; }
+        public Theme Theme { get; set; }
     }
 
     public class Attendance

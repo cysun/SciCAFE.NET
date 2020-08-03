@@ -54,6 +54,7 @@ namespace SciCAFE.NET
 
             services.AddScoped<UserService>();
             services.AddScoped<ProgramService>();
+            services.AddScoped<EventService>();
         }
 
         public void Configure(IApplicationBuilder app)

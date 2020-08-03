@@ -1,0 +1,26 @@
+﻿@model List<Category>
+@{
+    ViewData["Title"] = "Events";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Events</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Categories</li>
+    </ol>
+</nav>
+
+<table class="table table-hover">
+    <thead>
+        <tr><th>Name</th><th>Additonal Information</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>@category.AdditionalInfo</td>
+            </tr>
+        }
+    </tbody>
+</table>
