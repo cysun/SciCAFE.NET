@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SciCAFE.NET.Models;
+using SciCAFE.NET.Security;
 using SciCAFE.NET.Security.Constants;
 using SciCAFE.NET.Services;
 
@@ -55,13 +56,7 @@ namespace SciCAFE.NET.Controllers
             var result = await _userManager.CreateAsync(user, input.Password);
             if (result.Succeeded)
             {
-                List<Claim> claims = new List<Claim>();
-                if (user.IsAdministrator)
-                    claims.Add(new Claim(ClaimType.IsAdministrator, "True"));
-                if (user.IsEventOrganizer)
-                    claims.Add(new Claim(ClaimType.IsEventOrganizer, "True"));
-                if (user.IsRewardProvider)
-                    claims.Add(new Claim(ClaimType.IsRewardProvider, "True"));
+                var claims = SecurityUtils.GetAdditionalClaims(user);
                 if (claims.Count > 0)
                     await _userManager.AddClaimsAsync(user, claims);
 
@@ -92,6 +87,7 @@ namespace SciCAFE.NET.Controllers
             if (!ModelState.IsValid) return View(input);
 
             var user = _userService.GetUser(id);
+            var oldClaims = SecurityUtils.GetAdditionalClaims(user);
 
             if (!string.IsNullOrWhiteSpace(input.Password))
             {
@@ -104,10 +100,14 @@ namespace SciCAFE.NET.Controllers
                 }
             }
 
-            await UpdateUserClaims(user, input);
-
             _mapper.Map<EditUserInputModel, User>(input, user);
             _userService.SaveChanges();
+
+            var newClaims = SecurityUtils.GetAdditionalClaims(user);
+            if (oldClaims.Count > 0)
+                await _userManager.RemoveClaimsAsync(user, oldClaims);
+            if (newClaims.Count > 0)
+                await _userManager.AddClaimsAsync(user, newClaims);
 
             _logger.LogInformation("{user} edited account {account}", User.Identity.Name, input.Email);
 
@@ -118,35 +118,6 @@ namespace SciCAFE.NET.Controllers
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return await _userManager.ResetPasswordAsync(user, token, newPassword);
-        }
-
-        private async Task UpdateUserClaims(User user, EditUserInputModel input)
-        {
-            List<Claim> claimsToAdd = new List<Claim>();
-            List<Claim> claimsToRemove = new List<Claim>();
-            if (user.IsAdministrator != input.IsAdministrator)
-            {
-                var claim = new Claim(ClaimType.IsAdministrator, "True");
-                if (user.IsAdministrator) claimsToRemove.Add(claim);
-                else claimsToAdd.Add(claim);
-            }
-            if (user.IsEventOrganizer != input.IsEventOrganizer)
-            {
-                var claim = new Claim(ClaimType.IsEventOrganizer, "True");
-                if (user.IsEventOrganizer) claimsToRemove.Add(claim);
-                else claimsToAdd.Add(claim);
-            }
-            if (user.IsRewardProvider != input.IsRewardProvider)
-            {
-                var claim = new Claim(ClaimType.IsRewardProvider, "True");
-                if (user.IsRewardProvider) claimsToRemove.Add(claim);
-                else claimsToAdd.Add(claim);
-            }
-
-            if (claimsToAdd.Count > 0)
-                await _userManager.AddClaimsAsync(user, claimsToAdd);
-            if (claimsToRemove.Count > 0)
-                await _userManager.RemoveClaimsAsync(user, claimsToRemove);
         }
     }
 }

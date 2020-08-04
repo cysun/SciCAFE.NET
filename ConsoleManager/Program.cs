@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SciCAFE.NET.Models;
+using SciCAFE.NET.Security;
 using SciCAFE.NET.Security.Constants;
 using SciCAFE.NET.Services;
 
@@ -91,8 +92,12 @@ namespace ConsoleManager
             user.IsAdministrator = Console.ReadLine().ToLower() == "y";
             Console.Write("\t Event Organizer? [y|n]: ");
             user.IsEventOrganizer = Console.ReadLine().ToLower() == "y";
+            Console.Write("\t Event Reviewer? [y|n]: ");
+            user.IsEventReviewer = Console.ReadLine().ToLower() == "y";
             Console.Write("\t Reward Provider? [y|n]: ");
             user.IsRewardProvider = Console.ReadLine().ToLower() == "y";
+            Console.Write("\t Reward Reviewer? [y|n]: ");
+            user.IsRewardReviewer = Console.ReadLine().ToLower() == "y";
             Console.Write("\t Save or Cancel? [s|c] ");
             var cmd = Console.ReadLine().ToLower();
             if (cmd == "s")
@@ -100,13 +105,7 @@ namespace ConsoleManager
                 var result = await userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {
-                    List<Claim> claims = new List<Claim>();
-                    if (user.IsAdministrator)
-                        claims.Add(new Claim(ClaimType.IsAdministrator, "True"));
-                    if (user.IsEventOrganizer)
-                        claims.Add(new Claim(ClaimType.IsEventOrganizer, "True"));
-                    if (user.IsRewardProvider)
-                        claims.Add(new Claim(ClaimType.IsRewardProvider, "True"));
+                    var claims = SecurityUtils.GetAdditionalClaims(user);
                     if (claims.Count > 0)
                         await userManager.AddClaimsAsync(user, claims);
 

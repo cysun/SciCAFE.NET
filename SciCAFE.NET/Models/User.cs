@@ -18,7 +18,9 @@ namespace SciCAFE.NET.Models
 
         public bool IsAdministrator { get; set; }
         public bool IsEventOrganizer { get; set; }
+        public bool IsEventReviewer { get; set; }
         public bool IsRewardProvider { get; set; }
+        public bool IsRewardReviewer { get; set; }
 
         public string Name => $"{FirstName} {LastName}";
     }

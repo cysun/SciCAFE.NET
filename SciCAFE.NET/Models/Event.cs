@@ -53,8 +53,8 @@ namespace SciCAFE.NET.Models
 
         public List<EventTheme> EventThemes { get; set; }
 
-        public string OrganizerId { get; set; }
-        public User Organizer { get; set; }
+        public string CreatorId { get; set; }
+        public User Creator { get; set; }
 
         public DateTime? SubmitDate { get; set; }
 

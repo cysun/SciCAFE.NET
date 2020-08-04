@@ -50,8 +50,14 @@ namespace SciCAFE.NET.Models
         [Display(Name = "Event Organizer")]
         public bool IsEventOrganizer { get; set; }
 
+        [Display(Name = "Event Reviewer")]
+        public bool IsEventReviewer { get; set; }
+
         [Display(Name = "Reward Provider")]
         public bool IsRewardProvider { get; set; }
+
+        [Display(Name = "Reward Reviewer")]
+        public bool IsRewardReviewer { get; set; }
     }
 
     public class EditUserInputModel : NewUserInputModel

@@ -10,7 +10,9 @@ namespace SciCAFE.NET.Security.Constants
     {
         public const string IsAdministrator = "IsAdministrator";
         public const string IsEventOrganizer = "IsEventOrganizer";
+        public const string IsEventReviewer = "IsEventReviewer";
         public const string IsRewardProvider = "IsRewardProvider";
+        public const string IsRewardReviewer = "IsRewardReviewer";
     }
 
     public static class Policy

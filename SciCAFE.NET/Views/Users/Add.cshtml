@@ -51,10 +51,30 @@
                     <div class="form-group form-check">
                         <input asp-for="IsEventOrganizer" class="form-check-input">
                         <label asp-for="IsEventOrganizer" class="form-check-label"></label>
+                        <small id="eventOrganizerHelp" class="form-text text-muted">
+                            Events created by an Event Organizer are automatically approved.
+                        </small>
+                    </div>
+                    <div class="form-group form-check">
+                        <input asp-for="IsEventReviewer" class="form-check-input">
+                        <label asp-for="IsEventReviewer" class="form-check-label"></label>
+                        <small id="eventReviewerHelp" class="form-text text-muted">
+                            Event Reviewers can review (i.e. approve or reject) events created by other users.
+                        </small>
                     </div>
                     <div class="form-group form-check">
                         <input asp-for="IsRewardProvider" class="form-check-input">
                         <label asp-for="IsRewardProvider" class="form-check-label"></label>
+                        <small id="rewardProviderHelp" class="form-text text-muted">
+                            Rewards created by a Reward Provider are automatically approved.
+                        </small>
+                    </div>
+                    <div class="form-group form-check">
+                        <input asp-for="IsRewardReviewer" class="form-check-input">
+                        <label asp-for="IsRewardReviewer" class="form-check-label"></label>
+                        <small id="rewardReviewerHelp" class="form-text text-muted">
+                            Reward Reviewers can review (i.e. approve or reject) rewards created by other users.
+                        </small>
                     </div>
                     <a class="btn btn-secondary mr-2" asp-action="Index">Cancel</a>
                     <button type="submit" class="btn btn-primary">Add</button>

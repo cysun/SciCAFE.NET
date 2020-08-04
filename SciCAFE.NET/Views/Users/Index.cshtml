@@ -27,9 +27,17 @@
                     {
                         <span class="badge badge-success">Event Organizer</span>
                     }
+                    @if (user.IsEventReviewer)
+                    {
+                        <span class="badge badge-success">Event Reviewer</span>
+                    }
                     @if (user.IsRewardProvider)
                     {
                         <span class="badge badge-success">Reward Provider</span>
+                    }
+                    @if (user.IsRewardReviewer)
+                    {
+                        <span class="badge badge-success">Reward Reviewer</span>
                     }
                 </td>
                 <td class="d-none d-md-table-cell">

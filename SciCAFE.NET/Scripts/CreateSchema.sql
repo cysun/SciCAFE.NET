@@ -32,7 +32,9 @@ CREATE TABLE "AspNetUsers" (
     "LastName" character varying(255) NOT NULL,
     "IsAdministrator" boolean NOT NULL,
     "IsEventOrganizer" boolean NOT NULL,
+    "IsEventReviewer" boolean NOT NULL,
     "IsRewardProvider" boolean NOT NULL,
+    "IsRewardReviewer" boolean NOT NULL,
     CONSTRAINT "PK_AspNetUsers" PRIMARY KEY ("Id")
 );
 
@@ -132,7 +134,7 @@ CREATE TABLE "Events" (
     "StartTime" timestamp without time zone NOT NULL,
     "EndTime" timestamp without time zone NOT NULL,
     "CategoryId" integer NOT NULL,
-    "OrganizerId" text NULL,
+    "CreatorId" text NULL,
     "SubmitDate" timestamp without time zone NULL,
     "Review_IsApproved" boolean NULL,
     "Review_Comments" text NULL,
@@ -141,7 +143,7 @@ CREATE TABLE "Events" (
     "IsDeleted" boolean NOT NULL,
     CONSTRAINT "PK_Events" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_Events_Categories_CategoryId" FOREIGN KEY ("CategoryId") REFERENCES "Categories" ("Id") ON DELETE CASCADE,
-    CONSTRAINT "FK_Events_AspNetUsers_OrganizerId" FOREIGN KEY ("OrganizerId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_Events_AspNetUsers_CreatorId" FOREIGN KEY ("CreatorId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT,
     CONSTRAINT "FK_Events_AspNetUsers_Review_ReviewerId" FOREIGN KEY ("Review_ReviewerId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT
 );
 
@@ -191,9 +193,9 @@ CREATE UNIQUE INDEX "IX_Categories_Name" ON "Categories" ("Name");
 
 CREATE INDEX "IX_Events_CategoryId" ON "Events" ("CategoryId");
 
-CREATE INDEX "IX_Events_Name" ON "Events" ("Name");
+CREATE INDEX "IX_Events_CreatorId" ON "Events" ("CreatorId");
 
-CREATE INDEX "IX_Events_OrganizerId" ON "Events" ("OrganizerId");
+CREATE INDEX "IX_Events_Name" ON "Events" ("Name");
 
 CREATE INDEX "IX_Events_Review_ReviewerId" ON "Events" ("Review_ReviewerId");
 
@@ -208,5 +210,5 @@ CREATE INDEX "IX_Rewards_Review_ReviewerId" ON "Rewards" ("Review_ReviewerId");
 CREATE UNIQUE INDEX "IX_Themes_Name" ON "Themes" ("Name");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20200803180320_InitialSchema', '3.1.4');
+VALUES ('20200804183512_InitialSchema', '3.1.4');
 
