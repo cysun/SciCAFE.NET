@@ -124,5 +124,15 @@ namespace SciCAFE.NET.Controllers
 
             return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo");
         }
+
+        [HttpGet]
+        public IActionResult AdditionalInfo(int id)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            ViewBag.Themes = _eventService.GetThemes();
+            return View(evnt);
+        }
     }
 }
