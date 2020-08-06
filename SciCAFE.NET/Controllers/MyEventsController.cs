@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Asn1;
 using SciCAFE.NET.Models;
 using SciCAFE.NET.Services;
 
@@ -70,7 +71,7 @@ namespace SciCAFE.NET.Controllers
             _eventService.AddEvent(evnt);
             _eventService.SaveChanges();
 
-            _logger.LogInformation("{user} created {event}", User.Identity.Name, evnt.Name);
+            _logger.LogInformation("{user} created event {event}", User.Identity.Name, evnt.Name);
 
             return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo");
         }
@@ -120,7 +121,7 @@ namespace SciCAFE.NET.Controllers
 
             _eventService.SaveChanges();
 
-            _logger.LogInformation("{user} edited {event}", User.Identity.Name, evnt.Name);
+            _logger.LogInformation("{user} edited event {event}", User.Identity.Name, evnt.Name);
 
             return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo");
         }
@@ -132,7 +133,71 @@ namespace SciCAFE.NET.Controllers
             if (evnt == null) return NotFound();
 
             ViewBag.Themes = _eventService.GetThemes();
+            ViewBag.SelectedThemeIds = evnt.EventThemes.Select(t => t.ThemeId).ToList();
             return View(evnt);
+        }
+
+        [HttpPost("MyEvents/{eventId}/Themes/{themeId}")]
+        public IActionResult AddTheme(int eventId, int themeId)
+        {
+            var eventThemes = _eventService.GetEventThemes(eventId);
+            if (eventThemes.Count >= 3)
+                return BadRequest();
+
+            if (eventThemes.Find(t => t.ThemeId == themeId) == null)
+            {
+                _eventService.AddEventTheme(new EventTheme
+                {
+                    EventId = eventId,
+                    ThemeId = themeId
+                });
+                _eventService.SaveChanges();
+                _logger.LogInformation("{user} added theme {theme} to event {event}", User.Identity.Name, themeId, eventId);
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("MyEvents/{eventId}/Themes/{themeId}")]
+        public IActionResult RemoveTheme(int eventId, int themeId)
+        {
+            _eventService.RemoveTheme(eventId, themeId);
+            _eventService.SaveChanges();
+            _logger.LogInformation("{user} removed theme {theme} to event {event}", User.Identity.Name, themeId, eventId);
+
+            return Ok();
+        }
+
+        [HttpPut("MyEvents/{eventId}/CoreCompetency/{ccIndex}")]
+        public IActionResult SetCoreCompetency(int eventId, int ccIndex)
+        {
+            string[] competencies = new string[]{"Written Communication", "Oral Communication", "Quantitative Reasoning",
+            "Information Literacy", "Citical Thinking"};
+
+            if (ccIndex < 0 || ccIndex >= competencies.Length)
+                return BadRequest();
+
+            var evnt = _eventService.GetEvent(eventId);
+            if (evnt == null) return NotFound();
+
+            evnt.CoreCompetency = competencies[ccIndex];
+            _eventService.SaveChanges();
+            _logger.LogInformation("{user} set competency {competency} to event {event}", User.Identity.Name, ccIndex, eventId);
+
+            return Ok();
+        }
+
+        [HttpDelete("MyEvents/{eventId}/CoreCompetency/{ccIndex}")]
+        public IActionResult RemoveCoreCompetency(int eventId)
+        {
+            var evnt = _eventService.GetEvent(eventId);
+            if (evnt == null) return NotFound();
+
+            evnt.CoreCompetency = null;
+            _eventService.SaveChanges();
+            _logger.LogInformation("{user} removed competency from event {event}", User.Identity.Name, eventId);
+
+            return Ok();
         }
     }
 }

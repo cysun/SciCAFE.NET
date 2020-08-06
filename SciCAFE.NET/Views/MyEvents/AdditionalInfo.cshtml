@@ -59,7 +59,9 @@
             <div class="card">
                 <div class="card-header bg-white" id="cc-0">
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" data-cc-index="0" class="form-check-input" />
+                        <input type="checkbox" data-cc-index="0" class="form-check-input"
+                               @if (Model.CoreCompetency == "Written Communication") { @: checked
+                               } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc0"
                                 aria-expanded="true" aria-controls="collapse-cc0">
@@ -81,7 +83,9 @@
             <div class="card">
                 <div class="card-header bg-white" id="cc-1">
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" data-cc-index="1" class="form-check-input" />
+                        <input type="checkbox" data-cc-index="1" class="form-check-input"
+                               @if (Model.CoreCompetency == "Oral Communication") { @: checked
+                               } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc1"
                                 aria-expanded="true" aria-controls="collapse-cc1">
@@ -105,7 +109,9 @@
             <div class="card">
                 <div class="card-header bg-white" id="cc-2">
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" data-cc-index="2" class="form-check-input" />
+                        <input type="checkbox" data-cc-index="2" class="form-check-input"
+                               @if (Model.CoreCompetency == "Quantitative Reasoning") { @: checked
+                               } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc2"
                                 aria-expanded="true" aria-controls="collapse-cc2">
@@ -128,7 +134,9 @@
             <div class="card">
                 <div class="card-header bg-white" id="cc-3">
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" data-cc-index="3" class="form-check-input" />
+                        <input type="checkbox" data-cc-index="3" class="form-check-input"
+                               @if (Model.CoreCompetency == "Information Literacy") { @: checked
+                               } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc3"
                                 aria-expanded="true" aria-controls="collapse-cc3">
@@ -151,7 +159,9 @@
             <div class="card">
                 <div class="card-header bg-white" id="cc-4">
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" data-cc-index="4" class="form-check-input" />
+                        <input type="checkbox" data-cc-index="4" class="form-check-input"
+                               @if (Model.CoreCompetency == "Citical Thinking") { @: checked
+                               } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc4"
                                 aria-expanded="true" aria-controls="collapse-cc4">
@@ -175,9 +185,78 @@
                 <a class="btn btn-secondary" asp-action="Index">Cancel</a>
             </div>
             <div class="col-8 text-right">
-                <button name="saveDraft" value="true" class="btn btn-secondary">Save Draft</button>
-                <button type="submit" class="btn btn-primary">Next</button>
+                <a class="btn btn-secondary" asp-action="Index">Save Draft</a>
+                <a class="btn btn-primary" asp-action="Summary">Next</a>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        function checkThemesLimit() {
+            if ($("[data-theme-id]:checked").length >= 3)
+                $("input[data-theme-id]:not(':checked')").prop("disabled", true);
+            else
+                $("input[data-theme-id]").prop("disabled", false);
+        }
+        function checkCCLimit() {
+            if ($("[data-cc-index]:checked").length >= 1)
+                $("input[data-cc-index]:not(':checked')").prop("disabled", true);
+            else
+                $("input[data-cc-index]").prop("disabled", false);
+        }
+        $(function () {
+            $("input[data-theme-id]").each(function () {
+                if (@(Json.Serialize(ViewBag.SelectedThemeIds)).includes(parseInt($(this).attr("data-theme-id"))))
+                    $(this).prop("checked", true);
+            });
+            $("input[data-theme-id]").change(function () {
+                var themeId = $(this).attr("data-theme-id");
+                if ($(this).prop("checked")) {
+                    $.ajax({
+                        url: `@Context.Request.PathBase/MyEvents/@Model.Id/Themes/${themeId}`,
+                        method: "post",
+                        success: function () {
+                            checkThemesLimit();
+                        }
+                    });
+                }
+                else {
+                    $.ajax({
+                        url: `@Context.Request.PathBase/MyEvents/@Model.Id/Themes/${themeId}`,
+                        method: "delete",
+                        success: function () {
+                            console.log(`Theme ${themeId} removed.`);
+                        }
+                    });
+                }
+                checkThemesLimit();
+            });
+            checkThemesLimit();
+            $("input[data-cc-index").change(function () {
+                var ccIndex = $(this).attr("data-cc-index");
+                if ($(this).prop("checked")) {
+                    $.ajax({
+                        url: `@Context.Request.PathBase/MyEvents/@Model.Id/CoreCompetency/${ccIndex}`,
+                        method: "put",
+                        success: function () {
+                            checkCCLimit();
+                        }
+                    });
+                }
+                else {
+                    $.ajax({
+                        url: `@Context.Request.PathBase/MyEvents/@Model.Id/CoreCompetency/${ccIndex}`,
+                        method: "delete",
+                        success: function () {
+                            console.log(`Core Compentency ${ccIndex} removed.`);
+                        }
+                    });
+                }
+                checkCCLimit();
+            });
+            checkCCLimit();
+        });
+    </script>
+}

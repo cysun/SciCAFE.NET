@@ -16,6 +16,7 @@ namespace SciCAFE.NET.Services
         public DbSet<Category> Categories { get; set; }
         public DbSet<Theme> Themes { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<EventTheme> EventThemes { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Reward> Rewards { get; set; }
 
