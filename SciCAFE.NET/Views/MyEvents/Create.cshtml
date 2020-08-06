@@ -1,0 +1,103 @@
+﻿@model EventInputModel
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+@section StyleSheets{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Events</a></li>
+        <li class="breadcrumb-item active">New Event</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Basic Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Additional Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Summary</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-12">
+                    <label asp-for="ProgramIds"></label>
+                    <select asp-for="ProgramIds" asp-items="ViewBag.Programs" class="form-control selectpicker border"
+                            title="No program selected"></select>
+                    <small id="programsHelp" class="form-text text-muted">Program(s) that hosts or sponsors the event.</small>
+                </div>
+                <div class="form-group col-12">
+                    <label asp-for="CategoryId"></label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control selectpicker border"></select>
+                </div>
+                <div class="form-group col-12">
+                    <label asp-for="TargetAudience"></label>
+                    <input asp-for="TargetAudience" class="form-control">
+                    <span asp-validation-for="TargetAudience" class="text-danger"></span>
+                    <small id="audienceHelp" class="form-text text-muted">
+                        For example: general public, all CSULA students, students of a specific major, students who are affiliated
+                        with a program or organization, and so on.
+                    </small>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="StartTime"></label>
+                    <input asp-for="StartTime" class="form-control">
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="EndTime"></label>
+                    <input asp-for="EndTime" class="form-control">
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+                <div class="form-group col-12">
+                    <label asp-for="Location"></label>
+                    <input asp-for="Location" class="form-control">
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+                <div class="form-group col-12">
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-4">
+                    <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+                </div>
+                <div class="col-8 text-right">
+                    <button name="saveDraft" value="true" class="btn btn-secondary">Save Draft</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script>
+        $(function () {
+            $("select").selectpicker();
+            $("textarea").summernote({
+                height: 400
+            });
+        });
+    </script>
+}

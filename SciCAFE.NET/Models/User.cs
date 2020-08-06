@@ -10,10 +10,12 @@ namespace SciCAFE.NET.Models
 {
     public class User : IdentityUser
     {
-        [Required, MaxLength(255)]
+        [Required]
+        [MaxLength(255)]
         public string FirstName { get; set; }
 
-        [Required, MaxLength(255)]
+        [Required]
+        [MaxLength(255)]
         public string LastName { get; set; }
 
         public bool IsAdministrator { get; set; }

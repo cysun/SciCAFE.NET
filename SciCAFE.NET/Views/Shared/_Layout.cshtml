@@ -36,8 +36,16 @@
                             Events
                         </a>
                         <div class="dropdown-menu" aria-labelledby="eventsDropdown">
-                            <a class="dropdown-item" asp-controller="Categories" asp-action="Index">Categories</a>
-                            <a class="dropdown-item" asp-controller="Themes" asp-action="Index">Themes</a>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a class="dropdown-item" asp-controller="MyEvents" asp-action="Index">My Events</a>
+                            }
+                            <a class="dropdown-item" asp-controller="Events" asp-action="Index">All Events</a>
+                            @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)
+                            {
+                                <a class="dropdown-item" asp-controller="Categories" asp-action="Index">Categories</a>
+                                <a class="dropdown-item" asp-controller="Themes" asp-action="Index">Themes</a>
+                            }
                         </div>
                     </li>
                     @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)

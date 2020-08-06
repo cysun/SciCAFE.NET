@@ -1,0 +1,58 @@
+﻿@model List<Event>
+@{
+    ViewData["Title"] = "My Events";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">My Events</li>
+        <li class="ml-auto"><a asp-action="Create" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus"></i></a></li>
+    </ol>
+</nav>
+
+@if (Model.Count == 0)
+{
+    <p>You have not created any event yet.</p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr><th>Name</th>
+            <th class="d-none d-md-table-cell">Event Date</th>
+            <th class="d-none d-lg-table-cell">Submit Date</th>
+            <th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var evnt in Model)
+            {
+                <tr>
+                    <td>@evnt.Name</td>
+                    <td class="d-none d-md-table-cell">@evnt.StartTime.ToString("d")</td>
+                    <td class="d-none d-lg-table-cell">@evnt.SubmitDate?.ToString("d")</td>
+                    <td>
+                        @if (evnt.SubmitDate != null)
+                        {
+                            @if (evnt.Review?.IsApproved == null)
+                            {
+                                <span class="text-info font-weight-bold">Pending Review</span>
+                            }
+                            else if (evnt.Review?.IsApproved == true)
+                            {
+                                <span class="text-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Denied</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-secondary float-right"
+                           asp-action="Edit" asp-route-id="@evnt.Id"><i class="fas fa-edit"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

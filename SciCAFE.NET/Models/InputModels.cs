@@ -106,4 +106,33 @@ namespace SciCAFE.NET.Models
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
+
+    public class EventInputModel
+    {
+        [Required]
+        [StringLength(60, ErrorMessage = "The {0} value cannot exceed {1} characters. ")]
+        public string Name { get; set; }
+
+        public string Location { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Display(Name = "Start Time")]
+        [DataType(DataType.DateTime)]
+        public DateTime StartTime { get; set; } = DateTime.Today;
+
+        [Display(Name = "End Time")]
+        [DataType(DataType.DateTime)]
+        public DateTime EndTime { get; set; } = DateTime.Today;
+
+        [Display(Name = "Category")]
+        public int CategoryId { get; set; }
+
+        [Display(Name = "Affiliation(s)")]
+        public List<int> ProgramIds { get; set; }
+
+        [Display(Name = "Target Audience")]
+        public string TargetAudience { get; set; }
+    }
 }

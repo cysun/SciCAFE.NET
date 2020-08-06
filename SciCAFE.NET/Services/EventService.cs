@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SciCAFE.NET.Models;
 
 namespace SciCAFE.NET.Services
@@ -15,9 +16,21 @@ namespace SciCAFE.NET.Services
             _db = db;
         }
 
+        public List<Event> GetEventsByCreator(string creatorId)
+        {
+            return _db.Events.Where(e => e.CreatorId == creatorId).OrderByDescending(e => e.StartTime).ToList();
+        }
+
+        public Event GetEvent(int id)
+        {
+            return _db.Events.Where(e => e.Id == id).Include(e => e.EventPrograms).SingleOrDefault();
+        }
+
+        public void AddEvent(Event evnt) => _db.Events.Add(evnt);
+
         public List<Category> GetCategories()
         {
-            return _db.Categories.OrderBy(c => c.Name).ToList();
+            return _db.Categories.ToList();
         }
 
         public Category GetCategory(int id)

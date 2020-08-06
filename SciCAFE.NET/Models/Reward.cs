@@ -11,7 +11,8 @@ namespace SciCAFE.NET.Models
     {
         public int Id { get; set; }
 
-        [Required, MaxLength(255)]
+        [Required]
+        [MaxLength(255)]
         public string Name { get; set; }
 
         public string Description { get; set; }

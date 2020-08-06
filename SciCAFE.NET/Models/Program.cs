@@ -10,10 +10,12 @@ namespace SciCAFE.NET.Models
     {
         public int Id { get; set; }
 
-        [Required, MaxLength(255)]
+        [Required]
+        [MaxLength(255)]
         public string Name { get; set; }
 
-        [Required, MaxLength(50)]
+        [Required]
+        [MaxLength(50)]
         public string ShortName { get; set; }
 
         public string Description { get; set; }

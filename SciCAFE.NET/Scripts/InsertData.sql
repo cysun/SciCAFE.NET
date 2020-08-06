@@ -43,6 +43,8 @@ INSERT INTO "Categories" ("Name", "AdditionalInfo") VALUES
     ('Exhibit', 'exposition, film screening');
 INSERT INTO "Categories" ("Name", "AdditionalInfo") VALUES
     ('Election', null);
+INSERT INTO "Categories" ("Name", "AdditionalInfo") VALUES
+    ('Other', null);
 
 INSERT INTO "Themes" ("Name", "Description") VALUES
     ('Community Building & Celebration', '<p>Recognizing our campus community''s rich diversity, these events help
