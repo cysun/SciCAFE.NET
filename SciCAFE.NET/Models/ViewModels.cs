@@ -9,6 +9,16 @@ namespace SciCAFE.NET.Models
         public string Message { get; set; }
     }
 
+    public class EventViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime StartTime { get; set; }
+        public string StartTimeString => StartTime.ToString("g");
+        public DateTime EndTime { get; set; }
+        public string EndTimeString => EndTime.ToString("g");
+    }
+
     public class ErrorViewModel
     {
         public string RequestId { get; set; }

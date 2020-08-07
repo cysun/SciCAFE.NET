@@ -1,0 +1,57 @@
+﻿@model Event
+
+<div class="row">
+    <div class="form-group col-12">
+        <label>Name</label>
+        <span class="form-control">@Model.Name</span>
+    </div>
+    @if (Model.EventPrograms.Count > 0)
+    {
+        <div class="form-group col-12">
+            <label>Affiliation(s)</label>
+            <div class="form-control">
+                @foreach (var eventProgram in Model.EventPrograms)
+                {
+                    <span class="mr-3">@eventProgram.Program.ShortName</span>
+                }
+            </div>
+        </div>
+    }
+    <div class="form-group col-md-6">
+        <label>Time</label>
+        <span class="form-control">
+            @Model.StartTime.ToString("g") - @Model.EndTime.ToString("g")
+        </span>
+    </div>
+    <div class="form-group col-md-6">
+        <label>Location</label>
+        <span class="form-control">@Model.Location</span>
+    </div>
+    <div class="form-group col-md-6">
+        <label>Category</label>
+        <span class="form-control">@Model.Category.Name</span>
+    </div>
+    <div class="form-group col-md-6">
+        <label>Target Audience</label>
+        <span class="form-control">@Model.TargetAudience</span>
+    </div>
+    @if (Model.CoreCompetency != null)
+    {
+        <div class="form-group col-12">
+            <label>Develop Core Competency</label>
+            <span class="form-control">@Model.CoreCompetency</span>
+        </div>
+    }
+    @if (Model.EventThemes.Count > 0)
+    {
+        <div class="form-group col-12">
+            @foreach (var eventTheme in Model.EventThemes)
+            {
+                <span class="badge badge-info">@eventTheme.Theme.Name</span>
+            }
+        </div>
+    }
+    <div class="col-12 p-2">
+        @Html.Raw(Model.Description)
+    </div>
+</div>

@@ -16,6 +16,22 @@ namespace SciCAFE.NET.Services
             _db = db;
         }
 
+        public List<Event> GetUpcomingEvents()
+        {
+            return _db.Events.Where(e =>
+                DateTime.Now < e.StartTime && e.StartTime < DateTime.Now.AddDays(14) && e.Review.IsApproved == true)
+                .OrderBy(e => e.StartTime)
+                .ToList();
+        }
+
+        public List<Event> GetEvents(DateTime startTime, DateTime endTime)
+        {
+            return _db.Events.Where(e =>
+                startTime <= e.StartTime && e.EndTime < endTime && e.Review.IsApproved == true)
+                .OrderBy(e => e.StartTime)
+                .ToList();
+        }
+
         public List<Event> GetEventsByCreator(string creatorId)
         {
             return _db.Events.Where(e => e.CreatorId == creatorId).OrderByDescending(e => e.StartTime).ToList();

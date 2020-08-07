@@ -1,10 +1,6 @@
-﻿@{
+﻿@model List<Event>
+@{
     ViewData["Title"] = "Home";
-}
-@section StyleSheets{
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.2.0/main.min.css"
-          integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA="
-          crossorigin="anonymous">
 }
 
 <div class="row">
@@ -34,21 +30,24 @@
         </div>
     </div>
     <div class="col-md-5">
-        <div id="calendar"></div>
+        <h4 class="text-center">Upcoming Events</h4>
+        @if (Model.Count == 0)
+        {
+            <p>There are no upcoming events.</p>
+        }
+        else
+        {
+            <table class="table">
+                <tbody>
+                    @foreach (var evnt in Model)
+                    {
+                        <tr>
+                            <td>@evnt.StartTime.ToString("g")</td>
+                            <td><a asp-controller="Events" asp-action="View" asp-route-id="@evnt.Id">@evnt.Name</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </div>
 </div>
-
-@section Scripts{
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.2.0/main.min.js"
-            integrity="sha256-izRz5kNrZijklla/aBIkhdoxtbRpqQzHaaABtK0Tqe4="
-            crossorigin="anonymous"></script>
-    <script>
-        $(function () {
-            var calendarEl = document.getElementById("calendar");
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: "dayGridMonth"
-            });
-            calendar.render();
-        });
-    </script>
-}

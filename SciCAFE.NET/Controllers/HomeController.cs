@@ -6,21 +6,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SciCAFE.NET.Models;
+using SciCAFE.NET.Services;
 
 namespace SciCAFE.NET.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly EventService _eventService;
+
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(EventService eventService, ILogger<HomeController> logger)
         {
+            _eventService = eventService;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(_eventService.GetUpcomingEvents());
         }
 
         public IActionResult About()

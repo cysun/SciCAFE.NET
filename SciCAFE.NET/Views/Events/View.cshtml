@@ -1,0 +1,13 @@
+﻿@model Event
+@{
+    ViewData["Title"] = "View Event";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Events</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<partial name="_EventPartial" />

@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Events";
+}
+@section StyleSheets{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.2.0/main.min.css"
+          integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA="
+          crossorigin="anonymous">
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Events</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-7">
+        <div id="calendar"></div>
+    </div>
+    <div class="col-md-5">
+        <table class="table">
+            <tbody id="events">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.2.0/main.min.js"
+            integrity="sha256-izRz5kNrZijklla/aBIkhdoxtbRpqQzHaaABtK0Tqe4="
+            crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            var calendarEl = document.getElementById("calendar");
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: "dayGridMonth",
+                datesSet: function (dateInfo) {
+                    console.log(`${dateInfo.start}, ${dateInfo.end}`);
+                    $.ajax({
+                        url: `@Context.Request.PathBase/Events/Start/${dateInfo.startStr}/End/${dateInfo.endStr}`,
+                        success: function (data) {
+                            $("#events").empty();
+                            $("#events").append(data.map(e =>
+                                `<tr>
+                                    <td>${e.startTimeString}</td>
+                                    <td><a href="Events/View/${e.id}">${e.name}</a></td>
+                                </tr>`));
+                        }
+                    });
+                }
+            });
+            calendar.render();
+        });
+    </script>
+}
