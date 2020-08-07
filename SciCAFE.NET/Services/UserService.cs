@@ -22,6 +22,11 @@ namespace SciCAFE.NET.Services
             return _db.Users.OrderBy(u => u.FirstName).ThenBy(u => u.LastName).ToList();
         }
 
+        public List<User> GetEventReviewers()
+        {
+            return _db.Users.Where(u => u.IsEventReviewer).ToList();
+        }
+
         public User GetUser(string id)
         {
             return _db.Users.Find(id);

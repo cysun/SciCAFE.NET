@@ -1,0 +1,15 @@
+﻿<p>A new event is waiting for your review:</p>
+
+<table>
+    <tr><td>Id</td><td>{{evnt.id}}</td></tr>
+    <tr><td>Name</th><td>{{evnt.creator.name}}</td></tr>
+    <tr><td>Event Date</td><td>{{evnt.start_time | date.to_string '%m/%d/%Y'}}</td></tr>
+    <tr><td>Submit Date</td><td>{{evnt.submit_date | date.to_string '%m/%d/%Y'}}</td></tr>
+</table>
+
+<p>You can access the details of the event at
+<a href="{{app_url}}/ReviewEvents/Review/{{evnt.id}}">{{app_url}}/ReviewEvents/Review/{{evnt.id}}</a>
+</p>
+
+<p>Thank you!</p>
+<p>SciCAFE Team</p>

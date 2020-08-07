@@ -47,6 +47,8 @@ namespace SciCAFE.NET
             {
                 options.AddPolicy(Policy.IsAdministrator, policyBuilder =>
                     policyBuilder.RequireClaim(ClaimType.IsAdministrator, "true"));
+                options.AddPolicy(Policy.IsEventReviewer, policyBuilder =>
+                    policyBuilder.RequireClaim(ClaimType.IsEventReviewer, "true"));
                 options.AddPolicy(Policy.CanEditEvent, policyBuilder =>
                     policyBuilder.AddRequirements(new CanEditEventRequirement()));
                 options.AddPolicy(Policy.CanReviewEvent, policyBuilder =>
@@ -58,7 +60,7 @@ namespace SciCAFE.NET
             services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
-            services.AddSingleton<EmailSender>();
+            services.AddScoped<EmailSender>();
 
             services.AddScoped<UserService>();
             services.AddScoped<ProgramService>();

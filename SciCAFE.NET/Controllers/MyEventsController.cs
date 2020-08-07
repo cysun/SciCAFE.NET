@@ -20,6 +20,7 @@ namespace SciCAFE.NET.Controllers
     {
         private readonly EventService _eventService;
         private readonly ProgramService _programService;
+        private readonly EmailSender _emailSender;
 
         private readonly IAuthorizationService _authorizationService;
 
@@ -27,10 +28,12 @@ namespace SciCAFE.NET.Controllers
         private readonly ILogger<MyEventsController> _logger;
 
         public MyEventsController(EventService eventService, ProgramService programService,
-            IAuthorizationService authorizationService, IMapper mapper, ILogger<MyEventsController> logger)
+            EmailSender emailSender, IAuthorizationService authorizationService,
+            IMapper mapper, ILogger<MyEventsController> logger)
         {
             _eventService = eventService;
             _programService = programService;
+            _emailSender = emailSender;
             _authorizationService = authorizationService;
             _mapper = mapper;
             _logger = logger;
@@ -176,6 +179,8 @@ namespace SciCAFE.NET.Controllers
                 _eventService.SaveChanges();
                 _logger.LogInformation("{user} submitted event {event}", User.Identity.Name, id);
             }
+            var msg = _emailSender.CreateEventReviewMessage(evnt);
+            if (msg != null) _ = _emailSender.SendAsync(msg);
 
             return RedirectToAction("Index");
         }

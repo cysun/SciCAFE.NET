@@ -40,6 +40,7 @@ namespace SciCAFE.NET.Services
         public Event GetEvent(int id)
         {
             return _db.Events.Where(e => e.Id == id)
+                .Include(e => e.Creator)
                 .Include(e => e.Category)
                 .Include(e => e.EventPrograms).ThenInclude(p => p.Program)
                 .Include(e => e.EventThemes).ThenInclude(t => t.Theme)

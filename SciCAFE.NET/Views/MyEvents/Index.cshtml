@@ -37,7 +37,7 @@ else
                         {
                             @if (evnt.Review?.IsApproved == null)
                             {
-                                <span class="text-info font-weight-bold">Submitted on @evnt.SubmitDate?.ToString("d")</span>
+                                <span class="text-info">Submitted on @evnt.SubmitDate?.ToString("d")</span>
                             }
                             else if (evnt.Review?.IsApproved == true)
                             {
@@ -47,6 +47,10 @@ else
                             {
                                 <span class="text-danger">Denied on @evnt.Review.Timestamp.ToString("d")</span>
                             }
+                        }
+                        else
+                        {
+                            <span class="text-info">Draft</span>
                         }
                     </td>
                     <td>

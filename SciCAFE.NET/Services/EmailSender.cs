@@ -6,6 +6,7 @@ using System.Security.Policy;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using SciCAFE.NET.Models;
@@ -29,10 +30,17 @@ namespace SciCAFE.NET.Services
         private readonly EmailSettings _settings;
         private readonly string _templateFolder;
 
-        public EmailSender(IWebHostEnvironment env, IOptions<EmailSettings> settings)
+        private readonly UserService _userService;
+
+        private ILogger<EmailSender> _logger;
+
+        public EmailSender(IWebHostEnvironment env, IOptions<EmailSettings> settings,
+            UserService userService, ILogger<EmailSender> logger)
         {
             _templateFolder = $"{env.ContentRootPath}/EmailTemplates";
             _settings = settings.Value;
+            _userService = userService;
+            _logger = logger;
         }
 
         public MimeMessage CreateEmailVerificationMessage(User user, string link)
@@ -47,6 +55,35 @@ namespace SciCAFE.NET.Services
             {
                 Text = template.Render(new { link = $"{_settings.AppUrl}{link}" })
             };
+
+            _logger.LogInformation("Email verification message created for user {user}", user.UserName);
+
+            return msg;
+        }
+
+        public MimeMessage CreateEventReviewMessage(Event evnt)
+        {
+            var reviewers = _userService.GetEventReviewers();
+            if (reviewers.Count == 0)
+            {
+                _logger.LogError("No event reviewers in the system");
+                return null;
+            }
+
+            var msg = new MimeMessage();
+            msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
+            msg.To.AddRange(reviewers.Select(r => new MailboxAddress(r.Name, r.Email)).ToList());
+
+            var template = Template.Parse(File.ReadAllText($"{_templateFolder}/ReviewEvent.Subject.txt"));
+            msg.Subject = template.Render(new { evnt.Id });
+
+            template = Template.Parse(File.ReadAllText($"{_templateFolder}/ReviewEvent.Body.txt"));
+            msg.Body = new TextPart("html")
+            {
+                Text = template.Render(new { evnt, _settings.AppUrl })
+            };
+
+            _logger.LogInformation("Review event message created for event {event}", evnt.Id);
 
             return msg;
         }
