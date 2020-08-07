@@ -145,7 +145,7 @@ namespace SciCAFE.NET.Controllers
 
             _logger.LogInformation("{user} edited event {event}", User.Identity.Name, evnt.Name);
 
-            return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo");
+            return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo", new { id = evnt.Id });
         }
 
         [HttpGet]
@@ -170,9 +170,12 @@ namespace SciCAFE.NET.Controllers
             var evnt = _eventService.GetEvent(id);
             if (evnt == null) return NotFound();
 
-            evnt.SubmitDate = DateTime.Now;
-            _eventService.SaveChanges();
-            _logger.LogInformation("{user} submitted event {event}", User.Identity.Name, id);
+            if (evnt.SubmitDate == null)
+            {
+                evnt.SubmitDate = DateTime.Now;
+                _eventService.SaveChanges();
+                _logger.LogInformation("{user} submitted event {event}", User.Identity.Name, id);
+            }
 
             return RedirectToAction("Index");
         }
@@ -186,15 +189,18 @@ namespace SciCAFE.NET.Controllers
             if (!authResult.Succeeded)
                 return Submit(id);
 
-            evnt.SubmitDate = DateTime.Now;
-            evnt.Review = new Review
+            if (evnt.SubmitDate == null)
             {
-                IsApproved = true,
-                Timestamp = DateTime.Now,
-                ReviewerId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-            };
-            _eventService.SaveChanges();
-            _logger.LogInformation("{user} published event {event}", User.Identity.Name, id);
+                evnt.SubmitDate = DateTime.Now;
+                evnt.Review = new Review
+                {
+                    IsApproved = true,
+                    Timestamp = DateTime.Now,
+                    ReviewerId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                };
+                _eventService.SaveChanges();
+                _logger.LogInformation("{user} published event {event}", User.Identity.Name, id);
+            }
 
             return RedirectToAction("Index");
         }
