@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SciCAFE.NET.Models;
+using SciCAFE.NET.Security;
 using SciCAFE.NET.Security.Constants;
 using SciCAFE.NET.Services;
 using Serilog;
@@ -44,8 +46,14 @@ namespace SciCAFE.NET
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(Policy.IsAdministrator, policyBuilder =>
-                    policyBuilder.RequireClaim(ClaimType.IsAdministrator, "True", "true", "TRUE"));
+                    policyBuilder.RequireClaim(ClaimType.IsAdministrator, "true"));
+                options.AddPolicy(Policy.CanEditEvent, policyBuilder =>
+                    policyBuilder.AddRequirements(new CanEditEventRequirement()));
+                options.AddPolicy(Policy.CanReviewEvent, policyBuilder =>
+                    policyBuilder.AddRequirements(new CanReviewEventRequirement()));
             });
+            services.AddScoped<IAuthorizationHandler, CanEditEventHandler>();
+            services.AddScoped<IAuthorizationHandler, CanReviewEventHandler>();
 
             services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 

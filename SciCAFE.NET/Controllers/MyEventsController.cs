@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Asn1;
 using SciCAFE.NET.Models;
+using SciCAFE.NET.Security.Constants;
 using SciCAFE.NET.Services;
 
 namespace SciCAFE.NET.Controllers
@@ -20,14 +21,17 @@ namespace SciCAFE.NET.Controllers
         private readonly EventService _eventService;
         private readonly ProgramService _programService;
 
+        private readonly IAuthorizationService _authorizationService;
+
         private readonly IMapper _mapper;
         private readonly ILogger<MyEventsController> _logger;
 
         public MyEventsController(EventService eventService, ProgramService programService,
-            IMapper mapper, ILogger<MyEventsController> logger)
+            IAuthorizationService authorizationService, IMapper mapper, ILogger<MyEventsController> logger)
         {
             _eventService = eventService;
             _programService = programService;
+            _authorizationService = authorizationService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -77,10 +81,14 @@ namespace SciCAFE.NET.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> EditAsync(int id)
         {
             var evnt = _eventService.GetEvent(id);
             if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
 
             var input = _mapper.Map<EventInputModel>(evnt);
             input.ProgramIds = evnt.EventPrograms.Select(p => p.ProgramId).ToList();
@@ -100,12 +108,16 @@ namespace SciCAFE.NET.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, EventInputModel input, bool saveDraft = false)
+        public async Task<IActionResult> EditAsync(int id, EventInputModel input, bool saveDraft = false)
         {
             if (!ModelState.IsValid) return View(input);
 
             var evnt = _eventService.GetEvent(id);
             if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
 
             _mapper.Map(input, evnt);
 
@@ -137,16 +149,62 @@ namespace SciCAFE.NET.Controllers
             return View(evnt);
         }
 
-        [HttpPost("MyEvents/{eventId}/Themes/{themeId}")]
-        public IActionResult AddTheme(int eventId, int themeId)
+        [HttpGet]
+        public IActionResult Summary(int id)
         {
-            var eventThemes = _eventService.GetEventThemes(eventId);
-            if (eventThemes.Count >= 3)
+            return View(_eventService.GetEvent(id));
+        }
+
+        public IActionResult Submit(int id)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            evnt.SubmitDate = DateTime.Now;
+            _eventService.SaveChanges();
+            _logger.LogInformation("{user} submitted event {event}", User.Identity.Name, id);
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> PublishAsync(int id)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanReviewEvent);
+            if (!authResult.Succeeded)
+                return Submit(id);
+
+            evnt.SubmitDate = DateTime.Now;
+            evnt.Review = new Review
+            {
+                IsApproved = true,
+                Timestamp = DateTime.Now,
+                ReviewerId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            };
+            _eventService.SaveChanges();
+            _logger.LogInformation("{user} published event {event}", User.Identity.Name, id);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost("MyEvents/{eventId}/Themes/{themeId}")]
+        public async Task<IActionResult> AddThemeAsync(int eventId, int themeId)
+        {
+            var evnt = _eventService.GetEvent(eventId);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            if (evnt.EventThemes.Count >= 3)
                 return BadRequest();
 
-            if (eventThemes.Find(t => t.ThemeId == themeId) == null)
+            if (evnt.EventThemes.Find(t => t.ThemeId == themeId) == null)
             {
-                _eventService.AddEventTheme(new EventTheme
+                evnt.EventThemes.Add(new EventTheme
                 {
                     EventId = eventId,
                     ThemeId = themeId
@@ -159,9 +217,16 @@ namespace SciCAFE.NET.Controllers
         }
 
         [HttpDelete("MyEvents/{eventId}/Themes/{themeId}")]
-        public IActionResult RemoveTheme(int eventId, int themeId)
+        public async Task<IActionResult> RemoveThemeAsync(int eventId, int themeId)
         {
-            _eventService.RemoveTheme(eventId, themeId);
+            var evnt = _eventService.GetEvent(eventId);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            evnt.EventThemes.RemoveAll(t => t.ThemeId == themeId);
             _eventService.SaveChanges();
             _logger.LogInformation("{user} removed theme {theme} to event {event}", User.Identity.Name, themeId, eventId);
 
@@ -169,7 +234,7 @@ namespace SciCAFE.NET.Controllers
         }
 
         [HttpPut("MyEvents/{eventId}/CoreCompetency/{ccIndex}")]
-        public IActionResult SetCoreCompetency(int eventId, int ccIndex)
+        public async Task<IActionResult> SetCoreCompetencyAsync(int eventId, int ccIndex)
         {
             string[] competencies = new string[]{"Written Communication", "Oral Communication", "Quantitative Reasoning",
             "Information Literacy", "Citical Thinking"};
@@ -180,6 +245,10 @@ namespace SciCAFE.NET.Controllers
             var evnt = _eventService.GetEvent(eventId);
             if (evnt == null) return NotFound();
 
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
             evnt.CoreCompetency = competencies[ccIndex];
             _eventService.SaveChanges();
             _logger.LogInformation("{user} set competency {competency} to event {event}", User.Identity.Name, ccIndex, eventId);
@@ -188,10 +257,14 @@ namespace SciCAFE.NET.Controllers
         }
 
         [HttpDelete("MyEvents/{eventId}/CoreCompetency/{ccIndex}")]
-        public IActionResult RemoveCoreCompetency(int eventId)
+        public async Task<IActionResult> RemoveCoreCompetencyAsync(int eventId)
         {
             var evnt = _eventService.GetEvent(eventId);
             if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
 
             evnt.CoreCompetency = null;
             _eventService.SaveChanges();

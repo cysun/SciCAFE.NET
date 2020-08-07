@@ -1,4 +1,5 @@
-﻿@model List<Event>
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model List<Event>
 @{
     ViewData["Title"] = "My Events";
 }
@@ -18,10 +19,12 @@ else
 {
     <table class="table table-hover">
         <thead>
-            <tr><th>Name</th>
-            <th class="d-none d-md-table-cell">Event Date</th>
-            <th class="d-none d-lg-table-cell">Submit Date</th>
-            <th>Status</th><th></th></tr>
+            <tr>
+                <th>Name</th>
+                <th class="d-none d-md-table-cell">Event Date</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
             @foreach (var evnt in Model)
@@ -29,27 +32,29 @@ else
                 <tr>
                     <td>@evnt.Name</td>
                     <td class="d-none d-md-table-cell">@evnt.StartTime.ToString("d")</td>
-                    <td class="d-none d-lg-table-cell">@evnt.SubmitDate?.ToString("d")</td>
                     <td>
                         @if (evnt.SubmitDate != null)
                         {
                             @if (evnt.Review?.IsApproved == null)
                             {
-                                <span class="text-info font-weight-bold">Pending Review</span>
+                                <span class="text-info font-weight-bold">Submitted on @evnt.SubmitDate?.ToString("d")</span>
                             }
                             else if (evnt.Review?.IsApproved == true)
                             {
-                                <span class="text-success">Approved</span>
+                                <span class="text-success">Published on @evnt.Review.Timestamp.ToString("d")</span>
                             }
                             else
                             {
-                                <span class="text-danger">Denied</span>
+                                <span class="text-danger">Denied on @evnt.Review.Timestamp.ToString("d")</span>
                             }
                         }
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-secondary float-right"
-                           asp-action="Edit" asp-route-id="@evnt.Id"><i class="fas fa-edit"></i></a>
+                        @if ((await authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent)).Succeeded)
+                        {
+                            <a class="btn btn-sm btn-secondary float-right"
+                               asp-action="Edit" asp-route-id="@evnt.Id"><i class="fas fa-edit"></i></a>
+                        }
                     </td>
                 </tr>
             }

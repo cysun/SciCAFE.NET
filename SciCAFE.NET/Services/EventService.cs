@@ -24,8 +24,9 @@ namespace SciCAFE.NET.Services
         public Event GetEvent(int id)
         {
             return _db.Events.Where(e => e.Id == id)
-                .Include(e => e.EventPrograms)
-                .Include(e => e.EventThemes)
+                .Include(e => e.Category)
+                .Include(e => e.EventPrograms).ThenInclude(p => p.Program)
+                .Include(e => e.EventThemes).ThenInclude(t => t.Theme)
                 .SingleOrDefault();
         }
 
@@ -54,23 +55,6 @@ namespace SciCAFE.NET.Services
         }
 
         public void AddTheme(Theme theme) => _db.Themes.Add(theme);
-
-        public void RemoveTheme(int eventId, int themeId)
-        {
-            var eventTheme = new EventTheme
-            {
-                EventId = eventId,
-                ThemeId = themeId
-            };
-            _db.EventThemes.Remove(eventTheme);
-        }
-
-        public List<EventTheme> GetEventThemes(int eventId)
-        {
-            return _db.EventThemes.Where(t => t.EventId == eventId).ToList();
-        }
-
-        public void AddEventTheme(EventTheme eventTheme) => _db.EventThemes.Add(eventTheme);
 
         public void SaveChanges() => _db.SaveChanges();
     }

@@ -18,5 +18,7 @@ namespace SciCAFE.NET.Security.Constants
     public static class Policy
     {
         public const string IsAdministrator = "IsAdministrator";
+        public const string CanEditEvent = "CanEditEvent";
+        public const string CanReviewEvent = "CanReviewEvent";
     }
 }

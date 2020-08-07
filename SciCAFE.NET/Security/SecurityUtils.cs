@@ -15,15 +15,15 @@ namespace SciCAFE.NET.Security
             var claims = new List<Claim>();
 
             if (user.IsAdministrator)
-                claims.Add(new Claim(ClaimType.IsAdministrator, "True"));
+                claims.Add(new Claim(ClaimType.IsAdministrator, "true"));
             if (user.IsEventOrganizer)
-                claims.Add(new Claim(ClaimType.IsEventOrganizer, "True"));
+                claims.Add(new Claim(ClaimType.IsEventOrganizer, "true"));
             if (user.IsEventReviewer)
-                claims.Add(new Claim(ClaimType.IsEventReviewer, "True"));
+                claims.Add(new Claim(ClaimType.IsEventReviewer, "true"));
             if (user.IsRewardProvider)
-                claims.Add(new Claim(ClaimType.IsRewardProvider, "True"));
+                claims.Add(new Claim(ClaimType.IsRewardProvider, "true"));
             if (user.IsRewardReviewer)
-                claims.Add(new Claim(ClaimType.IsRewardReviewer, "True"));
+                claims.Add(new Claim(ClaimType.IsRewardReviewer, "true"));
 
             return claims;
         }
