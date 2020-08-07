@@ -65,11 +65,14 @@ namespace SciCAFE.NET.Controllers
 
             var evnt = _mapper.Map<Event>(input);
 
-            evnt.EventPrograms = input.ProgramIds.Select(id => new EventProgram
+            if (input.ProgramIds != null)
             {
-                ProgramId = id,
-                Event = evnt
-            }).ToList();
+                evnt.EventPrograms = input.ProgramIds.Select(id => new EventProgram
+                {
+                    ProgramId = id,
+                    Event = evnt
+                }).ToList();
+            }
 
             evnt.CreatorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             _eventService.AddEvent(evnt);
@@ -77,7 +80,7 @@ namespace SciCAFE.NET.Controllers
 
             _logger.LogInformation("{user} created event {event}", User.Identity.Name, evnt.Name);
 
-            return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo");
+            return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo", new { id = evnt.Id });
         }
 
         [HttpGet]
