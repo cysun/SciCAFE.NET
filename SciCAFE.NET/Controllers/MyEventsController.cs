@@ -124,15 +124,22 @@ namespace SciCAFE.NET.Controllers
 
             _mapper.Map(input, evnt);
 
-            var currentProgramIds = evnt.EventPrograms.Select(e => e.ProgramId).ToHashSet();
-            var programIdsToRemove = currentProgramIds.Except(input.ProgramIds).ToHashSet();
-            var programIdsToAdd = input.ProgramIds.Except(currentProgramIds).ToList();
-            evnt.EventPrograms.RemoveAll(p => programIdsToRemove.Contains(p.ProgramId));
-            evnt.EventPrograms.AddRange(programIdsToAdd.Select(id => new EventProgram
+            if (input.ProgramIds == null)
             {
-                EventId = evnt.Id,
-                ProgramId = id
-            }));
+                evnt.EventPrograms.Clear();
+            }
+            else
+            {
+                var currentProgramIds = evnt.EventPrograms.Select(e => e.ProgramId).ToHashSet();
+                var programIdsToRemove = currentProgramIds.Except(input.ProgramIds).ToHashSet();
+                var programIdsToAdd = input.ProgramIds.Except(currentProgramIds).ToList();
+                evnt.EventPrograms.RemoveAll(p => programIdsToRemove.Contains(p.ProgramId));
+                evnt.EventPrograms.AddRange(programIdsToAdd.Select(id => new EventProgram
+                {
+                    EventId = evnt.Id,
+                    ProgramId = id
+                }));
+            }
 
             _eventService.SaveChanges();
 
