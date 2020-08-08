@@ -45,6 +45,17 @@ namespace SciCAFE.NET.Controllers
             return View(_eventService.GetEventsByCreator(userId));
         }
 
+        public IActionResult View(int id)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            if (evnt.CreatorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                return Forbid();
+
+            return View(evnt);
+        }
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -81,7 +92,7 @@ namespace SciCAFE.NET.Controllers
             _eventService.AddEvent(evnt);
             _eventService.SaveChanges();
 
-            _logger.LogInformation("{user} created event {event}", User.Identity.Name, evnt.Name);
+            _logger.LogInformation("{user} created event {event}", User.Identity.Name, evnt.Id);
 
             return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo", new { id = evnt.Id });
         }
@@ -146,7 +157,7 @@ namespace SciCAFE.NET.Controllers
 
             _eventService.SaveChanges();
 
-            _logger.LogInformation("{user} edited event {event}", User.Identity.Name, evnt.Name);
+            _logger.LogInformation("{user} edited event {event}", User.Identity.Name, evnt.Id);
 
             return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo", new { id = evnt.Id });
         }
@@ -179,7 +190,7 @@ namespace SciCAFE.NET.Controllers
                 _eventService.SaveChanges();
                 _logger.LogInformation("{user} submitted event {event}", User.Identity.Name, id);
             }
-            var msg = _emailSender.CreateEventReviewMessage(evnt);
+            var msg = _emailSender.CreateReviewEventMessage(evnt);
             if (msg != null) _ = _emailSender.SendAsync(msg);
 
             return RedirectToAction("Index");

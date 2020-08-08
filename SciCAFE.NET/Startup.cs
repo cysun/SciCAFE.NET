@@ -48,7 +48,9 @@ namespace SciCAFE.NET
                 options.AddPolicy(Policy.IsAdministrator, policyBuilder =>
                     policyBuilder.RequireClaim(ClaimType.IsAdministrator, "true"));
                 options.AddPolicy(Policy.IsEventReviewer, policyBuilder =>
-                    policyBuilder.RequireClaim(ClaimType.IsEventReviewer, "true"));
+                    policyBuilder.RequireAssertion(context =>
+                        context.User.HasClaim(c =>
+                            (c.Type == ClaimType.IsAdministrator || c.Type == ClaimType.IsEventReviewer) && c.Value == "true")));
                 options.AddPolicy(Policy.CanEditEvent, policyBuilder =>
                     policyBuilder.AddRequirements(new CanEditEventRequirement()));
                 options.AddPolicy(Policy.CanReviewEvent, policyBuilder =>

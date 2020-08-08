@@ -61,7 +61,7 @@ namespace SciCAFE.NET.Services
             return msg;
         }
 
-        public MimeMessage CreateEventReviewMessage(Event evnt)
+        public MimeMessage CreateReviewEventMessage(Event evnt)
         {
             var reviewers = _userService.GetEventReviewers();
             if (reviewers.Count == 0)
@@ -83,7 +83,27 @@ namespace SciCAFE.NET.Services
                 Text = template.Render(new { evnt, _settings.AppUrl })
             };
 
-            _logger.LogInformation("Review event message created for event {event}", evnt.Id);
+            _logger.LogInformation("ReviewEvent message created for event {event}", evnt.Id);
+
+            return msg;
+        }
+
+        public MimeMessage CreateEventReviewedMessage(Event evnt)
+        {
+            var msg = new MimeMessage();
+            msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
+            msg.To.Add(new MailboxAddress(evnt.Creator.Name, evnt.Creator.Email));
+
+            var template = Template.Parse(File.ReadAllText($"{_templateFolder}/EventReviewed.Subject.txt"));
+            msg.Subject = template.Render(new { evnt.Id });
+
+            template = Template.Parse(File.ReadAllText($"{_templateFolder}/EventReviewed.Body.txt"));
+            msg.Body = new TextPart("html")
+            {
+                Text = template.Render(new { evnt })
+            };
+
+            _logger.LogInformation("EventReviewed message created for event {event}", evnt.Id);
 
             return msg;
         }

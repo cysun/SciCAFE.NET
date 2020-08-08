@@ -32,6 +32,14 @@ namespace SciCAFE.NET.Services
                 .ToList();
         }
 
+        public List<Event> GetUnreviewedEvents()
+        {
+            return _db.Events.Where(e => e.SubmitDate != null && e.Review.IsApproved == null)
+                .Include(e => e.Creator)
+                .OrderBy(e => e.SubmitDate)
+                .ToList();
+        }
+
         public List<Event> GetEventsByCreator(string creatorId)
         {
             return _db.Events.Where(e => e.CreatorId == creatorId).OrderByDescending(e => e.StartTime).ToList();

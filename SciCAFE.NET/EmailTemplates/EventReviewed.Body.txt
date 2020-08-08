@@ -1,0 +1,10 @@
+﻿<p>Your event {{evnt.name}} has been
+{{if evnt.review.is_approved}}approved{{else}}denied{{end}}.</p>
+
+{{if evnt.review.comments}}
+<p>Comments from reviewer:</p>
+<blockquote>{{evnt.review.comments}}</blockquote>
+{{end}}
+
+<p>Thank you!</p>
+<p>SciCAFE Team</p>

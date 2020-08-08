@@ -1,0 +1,19 @@
+﻿@model Event
+@{
+    ViewData["Title"] = "View Event";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Events</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+@if (Model.Review?.IsApproved == false)
+{
+    <div class="alert alert-danger" role="alert">
+        This event was denied for the following reason: @Model.Review?.Comments
+    </div>
+}
+<partial name="_EventPartial" />

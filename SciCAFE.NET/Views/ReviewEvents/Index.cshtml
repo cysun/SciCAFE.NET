@@ -1,0 +1,39 @@
+﻿@model List<Event>
+@{
+    ViewData["Title"] = "Review Events";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Review Events</li>
+    </ol>
+</nav>
+
+@if (Model.Count == 0)
+{
+    <p>There are no events to review.</p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="d-none d-md-table-cell">Event Date</th>
+                <th>Submit Date</th>
+                <th class="d-none d-md-table-cell">Creator</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var evnt in Model)
+            {
+                <tr>
+                    <td><a asp-action="Review" asp-route-id="@evnt.Id">@evnt.Name</a></td>
+                    <td class="d-none d-md-table-cell">@evnt.StartTime.ToString("d")</td>
+                    <td>@((evnt.SubmitDate?? default(DateTime)).ToString("d"))</td>
+                    <td class="d-none d-md-table-cell">@evnt.Creator.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
