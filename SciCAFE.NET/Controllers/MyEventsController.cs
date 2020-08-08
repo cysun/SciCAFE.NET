@@ -221,6 +221,19 @@ namespace SciCAFE.NET.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> AttendanceAsync(int id)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            ViewBag.Event = evnt;
+            return View(_eventService.GetEventAttendances(id));
+        }
+
         [HttpPost("MyEvents/{eventId}/Themes/{themeId}")]
         public async Task<IActionResult> AddThemeAsync(int eventId, int themeId)
         {
@@ -301,6 +314,54 @@ namespace SciCAFE.NET.Controllers
             evnt.CoreCompetency = null;
             _eventService.SaveChanges();
             _logger.LogInformation("{user} removed competency from event {event}", User.Identity.Name, eventId);
+
+            return Ok();
+        }
+
+        [HttpPost("MyEvents/{eventId}/Attendances/{attendeeId}")]
+        public async Task<IActionResult> AddAttendanceAsync(int eventId, string attendeeId)
+        {
+            var evnt = _eventService.GetEvent(eventId);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            var attendance = _eventService.GetAttendance(eventId, attendeeId);
+            if (attendance != null)
+                return BadRequest();
+
+            _eventService.AddAttendance(new Attendance
+            {
+                EventId = eventId,
+                AttendeeId = attendeeId
+            });
+            _eventService.SaveChanges();
+            _logger.LogInformation("{user} added attendee {attendee} to event {event}",
+                User.Identity.Name, attendeeId, eventId);
+
+            return Ok();
+        }
+
+        [HttpDelete("MyEvents/{eventId}/Attendances/{attendeeId}")]
+        public async Task<IActionResult> RemoveAttendanceAsync(int eventId, string attendeeId)
+        {
+            var evnt = _eventService.GetEvent(eventId);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            var attendance = _eventService.GetAttendance(eventId, attendeeId);
+            if (attendance == null)
+                return BadRequest();
+
+            _eventService.RemoveAttendance(attendance);
+            _eventService.SaveChanges();
+            _logger.LogInformation("{user} removed attendee {attendee} from event {event}",
+                User.Identity.Name, attendeeId, eventId);
 
             return Ok();
         }

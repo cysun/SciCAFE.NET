@@ -7,6 +7,13 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">My Events</a></li>
         <li class="breadcrumb-item active">@Model.Name</li>
+        @if (Model.Review?.IsApproved == true)
+        {
+            <li class="ml-auto">
+                <a asp-action="Attendance" asp-route-id="@Model.Id" class="btn btn-outline-dark btn-sm"
+                   title="Attendance"><i class="fas fa-user-friends"></i></a>
+            </li>
+        }
     </ol>
 </nav>
 

@@ -127,7 +127,7 @@ namespace SciCAFE.NET.Models
         public DateTime EndTime { get; set; } = DateTime.Today;
 
         [Display(Name = "Category")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         [Display(Name = "Affiliation(s)")]
         public List<int> ProgramIds { get; set; }

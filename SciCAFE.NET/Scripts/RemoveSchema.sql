@@ -1,4 +1,6 @@
-﻿DROP TABLE IF EXISTS "RewardEvents";
+﻿DROP FUNCTION IF EXISTS "SearchUsersByPrefix"(varchar);
+
+DROP TABLE IF EXISTS "RewardEvents";
 DROP TABLE IF EXISTS "Rewards";
 DROP TABLE IF EXISTS "Attendances";
 DROP TABLE IF EXISTS "EventThemes";

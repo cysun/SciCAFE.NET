@@ -54,10 +54,15 @@ else
                         }
                     </td>
                     <td>
-                        @if ((await authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent)).Succeeded)
+                        @if (evnt.SubmitDate == null)
                         {
-                            <a class="btn btn-sm btn-secondary float-right"
-                               asp-action="Edit" asp-route-id="@evnt.Id"><i class="fas fa-edit"></i></a>
+                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@evnt.Id"
+                               title="Edit"><i class="fas fa-edit"></i></a>
+                        }
+                        else if (evnt.Review?.IsApproved == true)
+                        {
+                            <a class="btn btn-secondary btn-sm" asp-action="Attendance" asp-route-id="@evnt.Id"
+                               title="Attendance"><i class="fas fa-user-friends"></i></a>
                         }
                     </td>
                 </tr>

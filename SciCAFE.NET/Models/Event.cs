@@ -52,7 +52,7 @@ namespace SciCAFE.NET.Models
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
         public List<EventProgram> EventPrograms { get; set; } = new List<EventProgram>();
@@ -104,7 +104,7 @@ namespace SciCAFE.NET.Models
         public int EventId { get; set; }
         public Event Event { get; set; }
 
-        public string UserId { get; set; }
-        public User User { get; set; }
+        public string AttendeeId { get; set; }
+        public User Attendee { get; set; }
     }
 }

@@ -1,4 +1,24 @@
-﻿INSERT INTO "Programs" ("Name", "ShortName", "Description", "Website") VALUES
+﻿CREATE UNIQUE INDEX "UserEmailIndex" ON "AspNetUsers" (LOWER("Email") varchar_pattern_ops);
+CREATE INDEX "UserFirstNameIndex" ON "AspNetUsers" (LOWER("FirstName") varchar_pattern_ops);
+CREATE INDEX "UserLastNameIndex" ON "AspNetUsers" (LOWER("LastName") varchar_pattern_ops);
+CREATE INDEX "UserFullNameIndex" ON "AspNetUsers" (LOWER("FirstName" || ' ' || "LastName") varchar_pattern_ops);
+
+CREATE OR REPLACE FUNCTION "SearchUsersByPrefix"(prefix varchar) RETURNS SETOF "AspNetUsers" AS
+$BODY$
+BEGIN
+    RETURN QUERY SELECT * FROM "AspNetUsers" WHERE
+        LOWER("FirstName") LIKE prefix || '%' OR
+        LOWER("LastName") LIKE prefix || '%' OR
+        LOWER("FirstName" || ' ' || "LastName") LIKE prefix || '%' OR
+        LOWER("Email") LIKE prefix || '%'
+        ORDER BY "FirstName", "LastName"
+        LIMIT 10;
+    RETURN;
+ END
+$BODY$
+LANGUAGE plpgsql;
+
+INSERT INTO "Programs" ("Name", "ShortName", "Description", "Website") VALUES
     ('Louis Stokes Alliance for Minority Participation', 'LSAMP', '<p>California State University –
         Louis Stokes Alliance for Minority Participation (CSU-LSAMP) is a comprehensive, statewide program
         dedicated to broadening participation in science, technology, engineering, and mathematics (STEM) disciplines.</p>',

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using SciCAFE.NET.Models;
 
 namespace SciCAFE.NET.Services
@@ -30,6 +31,11 @@ namespace SciCAFE.NET.Services
         public User GetUser(string id)
         {
             return _db.Users.Find(id);
+        }
+
+        public List<User> SearchUserByPrefix(string prefix)
+        {
+            return _db.Users.FromSqlRaw("SELECT * FROM \"SearchUsersByPrefix\"({0})", prefix.ToLower()).ToList();
         }
 
         public void SaveChanges() => _db.SaveChanges();

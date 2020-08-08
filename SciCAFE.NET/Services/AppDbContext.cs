@@ -41,7 +41,7 @@ namespace SciCAFE.NET.Services
 
             modelBuilder.Entity<EventTheme>().HasKey(e => new { e.EventId, e.ThemeId });
 
-            modelBuilder.Entity<Attendance>().HasAlternateKey(a => new { a.EventId, a.UserId });
+            modelBuilder.Entity<Attendance>().HasAlternateKey(a => new { a.EventId, a.AttendeeId });
 
             modelBuilder.Entity<Reward>().HasQueryFilter(r => !r.IsDeleted);
             modelBuilder.Entity<Reward>().Property(r => r.NumOfEventsToQualify).HasDefaultValue(1);

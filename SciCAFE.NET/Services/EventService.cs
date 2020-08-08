@@ -57,6 +57,24 @@ namespace SciCAFE.NET.Services
 
         public void AddEvent(Event evnt) => _db.Events.Add(evnt);
 
+        public List<Attendance> GetEventAttendances(int eventId)
+        {
+            return _db.Attendances.Where(a => a.EventId == eventId)
+                .Include(a => a.Attendee)
+                .OrderBy(a => a.Attendee.FirstName).ThenBy(a => a.Attendee.LastName)
+                .ToList();
+        }
+
+        public Attendance GetAttendance(int eventId, string attendeeId)
+        {
+            return _db.Attendances.Where(a => a.EventId == eventId && a.AttendeeId == attendeeId)
+                .SingleOrDefault();
+        }
+
+        public void AddAttendance(Attendance attendance) => _db.Attendances.Add(attendance);
+
+        public void RemoveAttendance(Attendance attendance) => _db.Attendances.Remove(attendance);
+
         public List<Category> GetCategories()
         {
             return _db.Categories.ToList();

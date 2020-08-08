@@ -1,0 +1,100 @@
+﻿@model List<Attendance>
+@{
+    ViewData["Title"] = "Event Attendance";
+    var evnt = (Event)ViewBag.Event;
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Events</a></li>
+        <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@evnt.Id">@evnt.Name</a></li>
+        <li class="breadcrumb-item active">Attendance (<span id="total">@Model.Count</span>)</li>
+    </ol>
+</nav>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-user-plus"></i></div>
+            </div>
+            <input id="add" type="text" class="form-control basicAutoComplete" id="attendee"
+                   placeholder="Add Attendee" autocomplete="off">
+        </div>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr><th>Name</th><th class="d-none d-md-table-cell">Email</th><th></th></tr>
+    </thead>
+    <tbody id="attendances">
+        @foreach (var attendance in Model)
+        {
+            <tr data-attendee-id="@attendance.AttendeeId">
+                <td>@attendance.Attendee.Name</td>
+                <td class="d-none d-md-table-cell">@attendance.Attendee.Email</td>
+                <td>
+                    <button class="removeAttendance btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@master/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <script>
+        function removeAttendee(e) {
+            var row = e.closest("tr");
+            var attendeeId = row.attr("data-attendee-id");
+            $.ajax({
+                url: `@Context.Request.PathBase/MyEvents/@evnt.Id/Attendances/${attendeeId}`,
+                method: "delete",
+                success: function () {
+                    var total = parseInt($("#total").text());
+                    $("#total").text(--total);
+                    row.remove();
+                }
+            });
+        }
+        $(function () {
+            $(".removeAttendance").click(function () {
+                removeAttendee($(this));
+            });
+            $("#add").autoComplete({
+                minLength: 2,
+                resolverSettings: {
+                    url: "@Context.Request.PathBase/Users/PrefixSearch"
+                },
+                formatResult: function (item) {
+                    return {
+                        text: item.firstName + " " + item.lastName
+                    }
+                }
+            });
+            $("#add").on("autocomplete.select", function (evt, item) {
+                $.ajax({
+                    url: `@Context.Request.PathBase/MyEvents/@evnt.Id/Attendances/${item.id}`,
+                    method: "post",
+                    success: function () {
+                        var total = parseInt($("#total").text());
+                        $("#total").text(++total);
+                        var row = $(`<tr data-attendee-id='${item.id}'>
+                                       <td>${item.firstName} ${item.lastName}</td>
+                                       <td class="d-none d-md-table-cell">${item.email}</td>
+                                   </tr>`);
+                        var btn = $("<button class='btn btn-danger btn-sm'><i class='far fa-trash-alt'></i></button>");
+                        btn.click(function () {
+                            removeAttendee($(this));
+                        });
+                        var cell = $("<td></td>").append(btn);
+                        row.append(cell);
+                        $("#attendances").append(row);
+                    }
+                });
+                $("#add").val("");
+            });
+        });
+    </script>
+}
