@@ -21,8 +21,10 @@ namespace SciCAFE.NET.Security.Constants
         public const string IsEventReviewer = "IsEventReviewer";
         public const string IsRewardReviewer = "IsRewardReviewer";
         public const string CanEditEvent = "CanEditEvent";
-        public const string CanEditReward = "CanEditReward";
         public const string CanReviewEvent = "CanReviewEvent";
+        public const string CanManageAttendance = "CanManageAttendance";
+        public const string CanEditReward = "CanEditReward";
         public const string CanReviewReward = "CanReviewReward";
+        public const string CanAddQualifyingEvent = "CanAddQualifyingEvent";
     }
 }

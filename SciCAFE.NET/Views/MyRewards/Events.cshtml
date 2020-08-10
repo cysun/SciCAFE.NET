@@ -1,0 +1,138 @@
+﻿@model Reward
+@{
+    ViewData["Title"] = "Edit Reward";
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Edit"
+                   asp-route-id="@Context.Request.RouteValues["id"]">Basic Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Qualifying Events</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Summary"
+                   asp-route-id="@Context.Request.RouteValues["id"]">Summary</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <p>
+            Please specify the events this reward is for, and the minimum number of events someone must attend in order
+            to receive the reward. Note that you must specify at least one event before this reward can be published. After
+            this reward is published, you can add more qualifying events, but you cannot remove any event.
+        </p>
+        <div class="row">
+            <div class="form-group col-md-8 col-lg-9">
+                <label>Add Event</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-calendar-plus"></i></div>
+                    </div>
+                    <input id="add" type="text" class="form-control basicAutoComplete"
+                           placeholder="Search event to add" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group col-md-4 col-lg-3">
+                <label>Number of Events Required</label>
+                <input id="numOfEventsToQualify" class="form-control" value="@Model.NumOfEventsToQualify">
+            </div>
+            <div class="col-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr><th>Event Name</th><th class="d-none d-md-table-cell">Event Time</th><th></th></tr>
+                    </thead>
+                    <tbody id="events">
+                        @foreach (var rewardEvent in Model.RewardEvents)
+                        {
+                            <tr data-event-id="@rewardEvent.EventId">
+                                <td>@rewardEvent.Event.Name</td>
+                                <td class="d-none d-md-table-cell">@rewardEvent.Event.StartTime.ToString("g")</td>
+                                <td>
+                                    <button class='removeEvent btn btn-danger btn-sm'><i class='far fa-trash-alt'></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-4">
+                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+            </div>
+            <div class="col-8 text-right">
+                <a class="btn btn-secondary" asp-action="Index">Save Draft</a>
+                <a class="btn btn-primary" asp-action="Summary" asp-route-id="@Model.Id">Next</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.5/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <script>
+        function removeEvent(e) {
+            var row = e.closest("tr");
+            var eventId = row.attr("data-event-id");
+            $.ajax({
+                url: `@Context.Request.PathBase/MyRewards/@Model.Id/Events/${eventId}`,
+                method: "delete",
+                success: function () {
+                    row.remove();
+                }
+            });
+        }
+        $(function () {
+            $("#numOfEventsToQualify").change(function () {
+                $.ajax({
+                    url: `@Context.Request.PathBase/MyRewards/@Model.Id/NumOfEventsToQualify/${$(this).val()}`,
+                    method: "put"
+                });
+            });
+            $(".removeEvent").click(function () {
+                removeEvent($(this));
+            });
+            $("#add").autoComplete({
+                minLength: 2,
+                resolverSettings: {
+                    url: "@Context.Request.PathBase/Events/Search"
+                },
+                formatResult: function (item) {
+                    return {
+                        text: item.name
+                    }
+                }
+            });
+            $("#add").on("autocomplete.select", function (evt, item) {
+                $.ajax({
+                    url: `@Context.Request.PathBase/MyRewards/@Model.Id/Events/${item.id}`,
+                    method: "post",
+                    success: function () {
+                        var row = $(`<tr data-event-id='${item.id}'>
+                                       <td>${item.name}</td>
+                                       <td class="d-none d-md-table-cell">${item.startTimeString}</td>
+                                   </tr>`);
+                        var btn = $("<button class='btn btn-danger btn-sm'><i class='far fa-trash-alt'></i></button>");
+                        btn.click(function () {
+                            removeEvent($(this));
+                        });
+                        var cell = $("<td></td>").append(btn);
+                        row.append(cell);
+                        $("#events").append(row);
+                    }
+                });
+                $("#add").val("");
+            });
+        });
+    </script>
+}

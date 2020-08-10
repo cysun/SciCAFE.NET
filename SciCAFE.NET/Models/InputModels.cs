@@ -142,19 +142,11 @@ namespace SciCAFE.NET.Models
         [StringLength(60, ErrorMessage = "The {0} value cannot exceed {1} characters. ")]
         public string Name { get; set; }
 
-        [Required]
-        public string Description { get; set; }
-
-        [Required]
-        [Range(typeof(int), "1", "20")]
-        [Display(Name = "Number of Events Required")]
-        public int NumOfEventsToQualify { get; set; } = 1;
-
         [DataType(DataType.Date)]
         [Display(Name = "Expiration Date")]
         public DateTime? ExpireDate { get; set; }
 
-        [Display(Name = "Qualifying Events")]
-        public List<int> EventIds { get; set; }
+        [Required]
+        public string Description { get; set; }
     }
 }

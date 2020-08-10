@@ -1,0 +1,37 @@
+﻿@model Reward
+
+<div class="row">
+    <div class="form-group col-12">
+        <label>Name</label>
+        <span class="form-control">@Model.Name</span>
+    </div>
+    <div class="form-group col-md-6">
+        <label>Expiration Date</label>
+        <span class="form-control">
+            @Model.ExpireDate?.ToString("d")
+        </span>
+    </div>
+    <div class="form-group col-md-6">
+        <label>Number of Events Required</label>
+        <span class="form-control">@Model.NumOfEventsToQualify</span>
+    </div>
+    <div class="col-12">
+        <table class="table table-hover">
+            <thead>
+                <tr><th>Event Name</th><th class="d-none d-md-table-cell">Event Time</th></tr>
+            </thead>
+            <tbody id="events">
+                @foreach (var rewardEvent in Model.RewardEvents)
+                {
+                    <tr data-event-id="@rewardEvent.EventId">
+                        <td>@rewardEvent.Event.Name</td>
+                        <td class="d-none d-md-table-cell">@rewardEvent.Event.StartTime.ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-12 p-2">
+        @Html.Raw(Model.Description)
+    </div>
+</div>

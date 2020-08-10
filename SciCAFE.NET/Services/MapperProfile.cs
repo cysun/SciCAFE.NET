@@ -22,6 +22,7 @@ namespace SciCAFE.NET.Services
             CreateMap<Event, EventInputModel>();
             CreateMap<Event, EventViewModel>();
             CreateMap<RewardInputModel, Reward>();
+            CreateMap<Reward, RewardInputModel>();
         }
     }
 }

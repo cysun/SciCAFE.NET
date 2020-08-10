@@ -1,0 +1,54 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model Reward
+@{
+    ViewData["Title"] = "Edit Reward";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Edit"
+                   asp-route-id="@Context.Request.RouteValues["id"]">Basic Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Events"
+                   asp-route-id="@Context.Request.RouteValues["id"]">Qualifying Events</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Summary</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <partial name="_RewardPartial" />
+    </div>
+</div>
+@if (Model.SubmitDate == null)
+{
+    <div class="row mt-3">
+        <div class="col-4">
+            <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+        </div>
+        <div class="col-8 text-right">
+            @if (Model.RewardEvents.Count > 0)
+            {
+                @if ((await authorizationService.AuthorizeAsync(User, Model, Policy.CanReviewReward)).Succeeded)
+                {
+                    <a class="btn btn-primary" asp-action="Publish" asp-route-id="@Model.Id">Publish</a>
+                }
+                else
+                {
+                    <a class="btn btn-primary" asp-action="Submit" asp-route-id="@Model.Id">Submit for Review</a>
+                }
+            }
+        </div>
+    </div>
+}

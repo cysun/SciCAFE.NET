@@ -16,6 +16,13 @@ namespace SciCAFE.NET.Services
             _db = db;
         }
 
+        public Reward GetReward(int id)
+        {
+            return _db.Rewards.Where(r => r.Id == id)
+                .Include(r => r.RewardEvents).ThenInclude(e => e.Event)
+                .SingleOrDefault();
+        }
+
         public List<Reward> GetRecentRewards()
         {
             return _db.Rewards.Where(r => r.Review.IsApproved == true && (r.ExpireDate == null || r.ExpireDate > DateTime.Now)
@@ -38,6 +45,15 @@ namespace SciCAFE.NET.Services
         }
 
         public void AddReward(Reward reward) => _db.Rewards.Add(reward);
+
+        public RewardEvent GetRewardEvent(int rewardId, int eventId)
+        {
+            return _db.RewardEvents.Where(r => r.RewardId == rewardId && r.EventId == eventId).SingleOrDefault();
+        }
+
+        public void AddRewardEvent(RewardEvent rewardEvent) => _db.RewardEvents.Add(rewardEvent);
+
+        public void RemoveRewardEvent(RewardEvent rewardEvent) => _db.RewardEvents.Remove(rewardEvent);
 
         public void SaveChanges() => _db.SaveChanges();
     }

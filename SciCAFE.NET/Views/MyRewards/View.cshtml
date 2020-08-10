@@ -1,0 +1,26 @@
+﻿@model Reward
+@{
+    ViewData["Title"] = "View Reward";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+        @if (Model.Review?.IsApproved == true)
+        {
+            <li class="ml-auto">
+                <a asp-action="AddEvents" asp-route-id="@Model.Id" class="btn btn-outline-dark btn-sm"
+                   title="Add Events"><i class="fas fa-calendar-alt"></i></a>
+            </li>
+        }
+    </ol>
+</nav>
+
+@if (Model.Review?.IsApproved == false)
+{
+    <div class="alert alert-danger" role="alert">
+        This reward was denied for the following reason: @Model.Review?.Comments
+    </div>
+}
+<partial name="_RewardPartial" />
