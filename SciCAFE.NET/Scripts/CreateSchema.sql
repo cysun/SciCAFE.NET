@@ -113,7 +113,7 @@ CREATE TABLE "Rewards" (
     "Name" character varying(255) NOT NULL,
     "Description" text NULL,
     "NumOfEventsToQualify" integer NOT NULL DEFAULT 1,
-    "ProviderId" text NULL,
+    "CreatorId" text NULL,
     "SubmitDate" timestamp without time zone NULL,
     "ExpireDate" timestamp without time zone NULL,
     "Review_IsApproved" boolean NULL,
@@ -122,7 +122,7 @@ CREATE TABLE "Rewards" (
     "Review_ReviewerId" text NULL,
     "IsDeleted" boolean NOT NULL,
     CONSTRAINT "PK_Rewards" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_Rewards_AspNetUsers_ProviderId" FOREIGN KEY ("ProviderId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_Rewards_AspNetUsers_CreatorId" FOREIGN KEY ("CreatorId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT,
     CONSTRAINT "FK_Rewards_AspNetUsers_Review_ReviewerId" FOREIGN KEY ("Review_ReviewerId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT
 );
 
@@ -215,12 +215,12 @@ CREATE INDEX "IX_EventThemes_ThemeId" ON "EventThemes" ("ThemeId");
 
 CREATE INDEX "IX_RewardEvents_EventId" ON "RewardEvents" ("EventId");
 
-CREATE INDEX "IX_Rewards_ProviderId" ON "Rewards" ("ProviderId");
+CREATE INDEX "IX_Rewards_CreatorId" ON "Rewards" ("CreatorId");
 
 CREATE INDEX "IX_Rewards_Review_ReviewerId" ON "Rewards" ("Review_ReviewerId");
 
 CREATE UNIQUE INDEX "IX_Themes_Name" ON "Themes" ("Name");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20200808232248_InitialSchema', '3.1.4');
+VALUES ('20200809041236_InitialSchema', '3.1.4');
 

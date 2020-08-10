@@ -51,13 +51,23 @@ namespace SciCAFE.NET
                     policyBuilder.RequireAssertion(context =>
                         context.User.HasClaim(c =>
                             (c.Type == ClaimType.IsAdministrator || c.Type == ClaimType.IsEventReviewer) && c.Value == "true")));
+                options.AddPolicy(Policy.IsRewardReviewer, policyBuilder =>
+                    policyBuilder.RequireAssertion(context =>
+                        context.User.HasClaim(c =>
+                            (c.Type == ClaimType.IsAdministrator || c.Type == ClaimType.IsRewardReviewer) && c.Value == "true")));
                 options.AddPolicy(Policy.CanEditEvent, policyBuilder =>
                     policyBuilder.AddRequirements(new CanEditEventRequirement()));
+                options.AddPolicy(Policy.CanEditReward, policyBuilder =>
+                    policyBuilder.AddRequirements(new CanEditRewardRequirement()));
                 options.AddPolicy(Policy.CanReviewEvent, policyBuilder =>
                     policyBuilder.AddRequirements(new CanReviewEventRequirement()));
+                options.AddPolicy(Policy.CanReviewReward, policyBuilder =>
+                    policyBuilder.AddRequirements(new CanReviewRewardRequirement()));
             });
             services.AddScoped<IAuthorizationHandler, CanEditEventHandler>();
+            services.AddScoped<IAuthorizationHandler, CanEditRewardHandler>();
             services.AddScoped<IAuthorizationHandler, CanReviewEventHandler>();
+            services.AddScoped<IAuthorizationHandler, CanReviewRewardHandler>();
 
             services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
@@ -67,6 +77,7 @@ namespace SciCAFE.NET
             services.AddScoped<UserService>();
             services.AddScoped<ProgramService>();
             services.AddScoped<EventService>();
+            services.AddScoped<RewardService>();
         }
 
         public void Configure(IApplicationBuilder app)

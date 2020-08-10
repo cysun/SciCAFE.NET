@@ -1,0 +1,76 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model List<Reward>
+@{
+    ViewData["Title"] = "My Rewards";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">My Rewards</li>
+        <li class="ml-auto"><a asp-action="Create" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus"></i></a></li>
+    </ol>
+</nav>
+
+@if (Model.Count == 0)
+{
+    <p>You have not created any reward yet.</p>
+    <p>
+        Note that this page shows the rewards you <em>created</em>. For the rewards that you <em>received</em> or may receive,
+        please check out your <a asp-controller="Profile" asp-action="Account">Profile</a> page.
+    </p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="d-none d-md-table-cell">Expiration Date</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reward in Model)
+            {
+                <tr>
+                    <td><a asp-action="View" asp-route-id="@reward.Id">@reward.Name</a></td>
+                    <td class="d-none d-md-table-cell">@reward.ExpireDate?.ToString("d")</td>
+                    <td>
+                        @if (reward.SubmitDate != null)
+                        {
+                            @if (reward.Review?.IsApproved == null)
+                            {
+                                <span class="text-info">Submitted on @reward.SubmitDate?.ToString("d")</span>
+                            }
+                            else if (reward.Review?.IsApproved == true)
+                            {
+                                <span class="text-success">Published on @reward.Review.Timestamp.ToString("d")</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Denied on @reward.Review.Timestamp.ToString("d")</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-info">Draft</span>
+                        }
+                    </td>
+                    <td>
+                        @if (reward.SubmitDate == null)
+                        {
+                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@reward.Id"
+                               title="Edit"><i class="fas fa-edit"></i></a>
+                        }
+                        else if (reward.Review?.IsApproved == true)
+                        {
+                            <a class="btn btn-secondary btn-sm" asp-action="Events" asp-route-id="@reward.Id"
+                               title="Events"><i class="far fa-calendar-check"></i></a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

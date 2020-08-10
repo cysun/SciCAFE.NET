@@ -14,6 +14,10 @@
 @if (Model.Count == 0)
 {
     <p>You have not created any event yet.</p>
+    <p>
+        Note that this page shows the events you <em>created</em>. For the events you <em>attended</em>, please check out your
+        <a asp-controller="Profile" asp-action="Account">Profile</a> page.
+    </p>
 }
 else
 {

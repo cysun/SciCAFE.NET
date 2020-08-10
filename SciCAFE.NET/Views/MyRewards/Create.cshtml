@@ -1,0 +1,134 @@
+﻿@model RewardInputModel
+@{
+    ViewData["Title"] = "Create Reward";
+}
+
+@section StyleSheets{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
+        <li class="breadcrumb-item active">New Reward</li>
+    </ol>
+</nav>
+
+<form method="post">
+    <div class="form-row">
+        <div class="form-group col-12">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group col-12">
+            <label>Qualifying Events</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-calendar-plus"></i></div>
+                </div>
+                <input id="add" type="text" class="form-control basicAutoComplete"
+                       placeholder="Add Event" autocomplete="off">
+            </div>
+            <span asp-validation-for="EventIds" class="text-danger"></span>
+            <small id="eventsHelp" class="form-text text-muted">
+                The events whose attendees are eligible for this reward. You must specify at least one event
+                before this reward can be published; you may add additional qualifying events after this
+                reward is published.
+            </small>
+        </div>
+        <div class="col-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Event Name</th><th class="d-none d-md-table-cell">Event Time</th><th></th></tr>
+                </thead>
+                <tbody id="events">
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="NumOfEventsToQualify"></label>
+            <input asp-for="NumOfEventsToQualify" class="form-control">
+            <span asp-validation-for="NumOfEventsToQualify" class="text-danger"></span>
+            <small id="numOfEventsHelp" class="form-text text-muted">
+                The minimum number of qualifying events someone has to attend to receive the reward.
+            </small>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="ExpireDate"></label>
+            <input asp-for="ExpireDate" class="form-control">
+            <span asp-validation-for="ExpireDate" class="text-danger"></span>
+            <small id="expireDateHelp" class="form-text text-muted">
+                It'd be a good idea to have an expiration date on the reward so people won't mistakenly
+                think it's always available.
+            </small>
+        </div>
+        <div class="form-group col-12">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-4">
+            <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+        </div>
+        <div class="col-8 text-right">
+            <button name="saveDraft" value="true" class="btn btn-secondary">Save Draft</button>
+            <button type="submit" class="btn btn-primary">Next</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.5/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <script>
+        $(function () {
+            $("select").selectpicker();
+            $("textarea").summernote({
+                height: 200
+            });
+            $("#add").keydown(function (evt) {
+                if (evt.keyCode == 13) {
+                    evt.preventDefault();
+                    return false;
+                }
+            });
+            $("#add").autoComplete({
+                minLength: 2,
+                resolverSettings: {
+                    url: "@Context.Request.PathBase/Events/Search"
+                },
+                formatResult: function (item) {
+                    return {
+                        text: item.name
+                    }
+                }
+            });
+            $("#add").on("autocomplete.select", function (evt, item) {
+                var eventIds = [];
+                $("input[name='EventIds']").each(function () {
+                    eventIds.push($(this).val());
+                });
+                console.log(eventIds);
+                if (!eventIds.includes(""+item.id)) {
+                    var row = $(`<tr data-event-id='${item.id}'>
+                                     <td>${item.name}</td>
+                                     <td class="d-none d-md-table-cell">${item.startTimeString}</td>
+                                 </tr>`);
+                    var btn = $("<button class='btn btn-danger btn-sm'><i class='far fa-trash-alt'></i></button>");
+                    btn.click(function () {
+                        row.remove();
+                    });
+                    var cell = $("<td></td>").append(btn);
+                    row.append(cell);
+                    row.append(`<input type="hidden" name="EventIds" value="${item.id}">`);
+                    $("#events").append(row);
+                }
+                $("#add").val("");
+            });
+        });
+    </script>
+}

@@ -11,7 +11,26 @@ BEGIN
         LOWER("LastName") LIKE prefix || '%' OR
         LOWER("FirstName" || ' ' || "LastName") LIKE prefix || '%' OR
         LOWER("Email") LIKE prefix || '%'
-        ORDER BY "FirstName", "LastName"
+        ORDER BY "FirstName", "LastName";
+    RETURN;
+ END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE INDEX "EventNameIndex" ON "Events" (LOWER("Name")  varchar_pattern_ops);
+
+ALTER TABLE "Events" ADD COLUMN tsv tsvector;
+CREATE INDEX "EventTsIndex" ON "Events" USING GIN(tsv);
+CREATE TRIGGER "EventTsTrigger"
+    BEFORE INSERT OR UPDATE ON "Events"
+    FOR EACH ROW EXECUTE FUNCTION
+    tsvector_update_trigger(tsv, 'pg_catalog.english', "Name");
+
+CREATE OR REPLACE FUNCTION "SearchEvents"(q varchar) RETURNS SETOF "Events" AS
+$BODY$
+BEGIN
+    RETURN QUERY SELECT * FROM "Events" WHERE
+        "Review_IsApproved" = TRUE AND (LOWER("Name") LIKE q || '%' OR plainto_tsquery(q) @@ tsv)
         LIMIT 10;
     RETURN;
  END

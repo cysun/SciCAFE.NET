@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SciCAFE.NET.Models;
@@ -44,6 +45,12 @@ namespace SciCAFE.NET.Controllers
         public List<EventViewModel> Events(DateTime startTime, DateTime endTime)
         {
             return _mapper.Map<List<Event>, List<EventViewModel>>(_eventService.GetEvents(startTime, endTime));
+        }
+
+        [HttpGet("Events/Search")]
+        public List<EventViewModel> Search([FromQuery] string q)
+        {
+            return _mapper.Map<List<Event>, List<EventViewModel>>(_eventService.SearchEvents(q).Take(10).ToList());
         }
     }
 }

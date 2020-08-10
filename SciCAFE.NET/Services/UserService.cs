@@ -33,9 +33,9 @@ namespace SciCAFE.NET.Services
             return _db.Users.Find(id);
         }
 
-        public List<User> SearchUserByPrefix(string prefix)
+        public List<User> SearchUsersByPrefix(string prefix)
         {
-            return _db.Users.FromSqlRaw("SELECT * FROM \"SearchUsersByPrefix\"({0})", prefix.ToLower()).ToList();
+            return _db.Users.FromSqlRaw("SELECT * FROM \"SearchUsersByPrefix\"({0})", prefix?.ToLower()).ToList();
         }
 
         public void SaveChanges() => _db.SaveChanges();

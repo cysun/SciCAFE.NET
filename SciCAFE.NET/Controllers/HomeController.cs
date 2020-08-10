@@ -13,18 +13,20 @@ namespace SciCAFE.NET.Controllers
     public class HomeController : Controller
     {
         private readonly EventService _eventService;
+        private readonly RewardService _rewardService;
 
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(EventService eventService, ILogger<HomeController> logger)
+        public HomeController(EventService eventService, RewardService rewardService, ILogger<HomeController> logger)
         {
             _eventService = eventService;
+            _rewardService = rewardService;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View(_eventService.GetUpcomingEvents());
+            return View((_eventService.GetUpcomingEvents(), _rewardService.GetRecentRewards()));
         }
 
         public IActionResult About()

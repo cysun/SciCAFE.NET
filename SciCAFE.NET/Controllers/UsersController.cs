@@ -124,7 +124,7 @@ namespace SciCAFE.NET.Controllers
         [HttpGet("Users/PrefixSearch")]
         public List<UserViewModel> PrefixSearch([FromQuery] string q)
         {
-            return _mapper.Map<List<User>, List<UserViewModel>>(_userService.SearchUserByPrefix(q));
+            return _mapper.Map<List<User>, List<UserViewModel>>(_userService.SearchUsersByPrefix(q));
         }
     }
 }

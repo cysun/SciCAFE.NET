@@ -45,6 +45,11 @@ namespace SciCAFE.NET.Services
             return _db.Events.Where(e => e.CreatorId == creatorId).OrderByDescending(e => e.StartTime).ToList();
         }
 
+        public List<Event> SearchEvents(string term)
+        {
+            return _db.Events.FromSqlRaw("SELECT * FROM \"SearchEvents\"({0})", term?.ToLower()).ToList();
+        }
+
         public Event GetEvent(int id)
         {
             return _db.Events.Where(e => e.Id == id)
