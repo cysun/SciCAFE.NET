@@ -1,0 +1,13 @@
+﻿@model Reward
+@{
+    ViewData["Title"] = "View Reward";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Rewards</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<partial name="_RewardPartial" />

@@ -32,6 +32,14 @@ namespace SciCAFE.NET.Services
                 .ToList();
         }
 
+        public List<Reward> GetCurrentRewards()
+        {
+            return _db.Rewards.Where(r => r.Review.IsApproved == true && (r.ExpireDate == null || r.ExpireDate > DateTime.Now))
+                .Include(r => r.Creator)
+                .OrderBy(r => r.Name)
+                .ToList();
+        }
+
         public List<Reward> GetUnreviewedRewards()
         {
             return _db.Rewards.Where(r => r.SubmitDate != null && r.Review.IsApproved == null)

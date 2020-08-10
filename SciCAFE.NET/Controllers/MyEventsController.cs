@@ -324,7 +324,7 @@ namespace SciCAFE.NET.Controllers
             var evnt = _eventService.GetEvent(eventId);
             if (evnt == null) return NotFound();
 
-            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanManageAttendance);
             if (!authResult.Succeeded)
                 return Forbid();
 
@@ -350,7 +350,7 @@ namespace SciCAFE.NET.Controllers
             var evnt = _eventService.GetEvent(eventId);
             if (evnt == null) return NotFound();
 
-            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanManageAttendance);
             if (!authResult.Succeeded)
                 return Forbid();
 
