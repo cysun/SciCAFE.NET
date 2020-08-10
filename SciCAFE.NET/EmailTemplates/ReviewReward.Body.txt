@@ -1,0 +1,15 @@
+﻿<p>A new reward is waiting for your review:</p>
+
+<table>
+    <tr><th>Id</th><td>{{reward.id}}</td></tr>
+    <tr><th>Name</th><td>{{reward.name}}</td></tr>
+    <tr><th>Submit Date</th><td>{{reward.submit_date | date.to_string '%m/%d/%Y'}}</td></tr>
+    <tr><th>Creator</th><td>{{reward.creator.name}}</td></tr>
+</table>
+
+<p>You can access the details of the event at
+<a href="{{app_url}}/ReviewRewards/Review/{{reward.id}}">{{app_url}}/ReviewRewards/Review/{{reward.id}}</a>
+</p>
+
+<p>Thank you!</p>
+<p>SciCAFE Team</p>

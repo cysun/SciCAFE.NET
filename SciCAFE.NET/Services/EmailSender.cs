@@ -108,6 +108,53 @@ namespace SciCAFE.NET.Services
             return msg;
         }
 
+        public MimeMessage CreateReviewRewardMessage(Reward reward)
+        {
+            var reviewers = _userService.GetRewardReviewers();
+            if (reviewers.Count == 0)
+            {
+                _logger.LogError("No reward reviewers in the system");
+                return null;
+            }
+
+            var msg = new MimeMessage();
+            msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
+            msg.To.AddRange(reviewers.Select(r => new MailboxAddress(r.Name, r.Email)).ToList());
+
+            var template = Template.Parse(File.ReadAllText($"{_templateFolder}/ReviewReward.Subject.txt"));
+            msg.Subject = template.Render(new { reward.Id });
+
+            template = Template.Parse(File.ReadAllText($"{_templateFolder}/ReviewReward.Body.txt"));
+            msg.Body = new TextPart("html")
+            {
+                Text = template.Render(new { reward, _settings.AppUrl })
+            };
+
+            _logger.LogInformation("ReviewReward message created for reward {reward}", reward.Id);
+
+            return msg;
+        }
+
+        public MimeMessage CreateRewardReviewedMessage(Reward reward)
+        {
+            var msg = new MimeMessage();
+            msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
+            msg.To.Add(new MailboxAddress(reward.Creator.Name, reward.Creator.Email));
+
+            var template = Template.Parse(File.ReadAllText($"{_templateFolder}/RewardReviewed.Subject.txt"));
+            msg.Subject = template.Render(new { reward.Id });
+
+            template = Template.Parse(File.ReadAllText($"{_templateFolder}/RewardReviewed.Body.txt"));
+            msg.Body = new TextPart("html")
+            {
+                Text = template.Render(new { reward })
+            };
+
+            _logger.LogInformation("RewardReviewed message created for reward {reward}", reward.Id);
+
+            return msg;
+        }
+
         public async Task SendAsync(MimeMessage msg)
         {
             using (var client = new SmtpClient())

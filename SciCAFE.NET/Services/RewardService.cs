@@ -19,6 +19,7 @@ namespace SciCAFE.NET.Services
         public Reward GetReward(int id)
         {
             return _db.Rewards.Where(r => r.Id == id)
+                .Include(r => r.Creator)
                 .Include(r => r.RewardEvents).ThenInclude(e => e.Event)
                 .SingleOrDefault();
         }

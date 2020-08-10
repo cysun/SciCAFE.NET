@@ -1,0 +1,10 @@
+﻿<p>Your reward {{reward.name}} has been
+{{if reward.review.is_approved}}approved{{else}}denied{{end}}.</p>
+
+{{if reward.review.comments}}
+<p>Comments from reviewer:</p>
+<blockquote>{{reward.review.comments}}</blockquote>
+{{end}}
+
+<p>Thank you!</p>
+<p>SciCAFE Team</p>

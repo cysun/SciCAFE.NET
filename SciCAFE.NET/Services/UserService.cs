@@ -28,6 +28,11 @@ namespace SciCAFE.NET.Services
             return _db.Users.Where(u => u.IsEventReviewer).ToList();
         }
 
+        public List<User> GetRewardReviewers()
+        {
+            return _db.Users.Where(u => u.IsRewardReviewer).ToList();
+        }
+
         public User GetUser(string id)
         {
             return _db.Users.Find(id);

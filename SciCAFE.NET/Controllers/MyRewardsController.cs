@@ -121,6 +121,48 @@ namespace SciCAFE.NET.Controllers
             return View(_rewardService.GetReward(id));
         }
 
+        public IActionResult Submit(int id)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            if (reward.SubmitDate == null)
+            {
+                reward.SubmitDate = DateTime.Now;
+                _rewardService.SaveChanges();
+                _logger.LogInformation("{user} submitted reward {reward}", User.Identity.Name, id);
+            }
+            var msg = _emailSender.CreateReviewRewardMessage(reward);
+            if (msg != null) _ = _emailSender.SendAsync(msg);
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> PublishAsync(int id)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanReviewReward);
+            if (!authResult.Succeeded)
+                return Submit(id);
+
+            if (reward.SubmitDate == null)
+            {
+                reward.SubmitDate = DateTime.Now;
+                reward.Review = new Review
+                {
+                    IsApproved = true,
+                    Timestamp = DateTime.Now,
+                    ReviewerId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                };
+                _rewardService.SaveChanges();
+                _logger.LogInformation("{user} published reward {reward}", User.Identity.Name, id);
+            }
+
+            return RedirectToAction("Index");
+        }
+
         [HttpPut("MyRewards/{rewardId}/NumOfEventsToQualify/{n}")]
         public async Task<IActionResult> SetNumOfEvents(int rewardId, int n)
         {

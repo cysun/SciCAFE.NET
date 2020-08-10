@@ -121,18 +121,16 @@ namespace SciCAFE.NET.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
 
-            var status = new StatusViewModel { PageTitle = "Email Confirmation" };
             if (result.Succeeded)
-            {
-                status.Subject = "Email Confirmed";
-                status.Message = "Thank you for confirming your email. Your account is now activated.";
-            }
+                return View("Status", new StatusViewModel
+                {
+                    Message = "Thank you for confirming your email. Your account is now activated."
+                });
             else
-            {
-                status.Subject = "Cannot Verify Email";
-                status.Message = "Sorry we cannot verify your email.";
-            }
-            return View("Status", status);
+                return View("Error", new ErrorViewModel
+                {
+                    Message = "Sorry we cannot verify your email."
+                });
         }
 
         public IActionResult AccessDenied()

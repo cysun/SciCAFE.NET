@@ -1,0 +1,49 @@
+﻿@model Reward
+@{
+    ViewData["Title"] = "Review Reward";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Review Rewards</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<partial name="_RewardPartial" />
+
+<form id="decision" method="post">
+    <div class="card border-primary mb-3">
+        <div class="card-header">Your Decision</div>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="comments">Comments (required for denying an event)</label>
+                <textarea class="form-control" id="comments" name="comments" rows="3" required></textarea>
+            </div>
+            <div class="form-row">
+                <div class="col-4">
+                    <a asp-action="Index" class="btn btn-secondary mr-2">Cancel</a>
+                </div>
+                <div class="col-8 text-right">
+                    <button id="deny" class="btn btn-danger mr-2">Deny</button>
+                    <button id="approve" class="btn btn-success">Approve</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script>
+    $(function () {
+      $("#deny").click(function () {
+        $("#decision").attr("action", "@Context.Request.PathBase/ReviewRewards/Deny/@Model.Id");
+      });
+      $("#approve").click(function () {
+        $("#comments").prop("required", false);
+        $("#decision").attr("action", "@Context.Request.PathBase/ReviewRewards/Approve/@Model.Id");
+      });
+    });
+    </script>
+}
