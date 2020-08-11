@@ -278,12 +278,17 @@ namespace SciCAFE.NET.Controllers
             return Ok();
         }
 
+        private readonly string[] competencies = new string[]{
+            "Written Communication",
+            "Oral Communication",
+            "Quantitative Reasoning",
+            "Information Literacy",
+            "Citical Thinking"
+        };
+
         [HttpPut("MyEvents/{eventId}/CoreCompetency/{ccIndex}")]
         public async Task<IActionResult> SetCoreCompetencyAsync(int eventId, int ccIndex)
         {
-            string[] competencies = new string[]{"Written Communication", "Oral Communication", "Quantitative Reasoning",
-            "Information Literacy", "Citical Thinking"};
-
             if (ccIndex < 0 || ccIndex >= competencies.Length)
                 return BadRequest();
 
@@ -294,26 +299,31 @@ namespace SciCAFE.NET.Controllers
             if (!authResult.Succeeded)
                 return Forbid();
 
-            evnt.CoreCompetency = competencies[ccIndex];
+            evnt.CoreCompetency = string.IsNullOrEmpty(evnt.CoreCompetency) ? competencies[ccIndex]
+                : $"{evnt.CoreCompetency}, {competencies[ccIndex]}";
             _eventService.SaveChanges();
-            _logger.LogInformation("{user} set competency {competency} to event {event}", User.Identity.Name, ccIndex, eventId);
+            _logger.LogInformation("{user} set competency {competency} to event {event}",
+                User.Identity.Name, ccIndex, eventId);
 
             return Ok();
         }
 
         [HttpDelete("MyEvents/{eventId}/CoreCompetency/{ccIndex}")]
-        public async Task<IActionResult> RemoveCoreCompetencyAsync(int eventId)
+        public async Task<IActionResult> RemoveCoreCompetencyAsync(int eventId, int ccIndex)
         {
             var evnt = _eventService.GetEvent(eventId);
-            if (evnt == null) return NotFound();
+            if (evnt == null || evnt.CoreCompetency == null) return NotFound();
 
             var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
             if (!authResult.Succeeded)
                 return Forbid();
 
-            evnt.CoreCompetency = null;
+            evnt.CoreCompetency = evnt.CoreCompetency.Replace(competencies[ccIndex] + ", ", null);
+            evnt.CoreCompetency = evnt.CoreCompetency.Replace(", " + competencies[ccIndex], null);
+
             _eventService.SaveChanges();
-            _logger.LogInformation("{user} removed competency from event {event}", User.Identity.Name, eventId);
+            _logger.LogInformation("{user} removed competency {compentency} from event {event}",
+                User.Identity.Name, ccIndex, eventId);
 
             return Ok();
         }

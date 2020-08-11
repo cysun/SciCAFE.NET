@@ -27,7 +27,11 @@
         </ul>
     </div>
     <div class="card-body">
-        <p>Please select up to three themes that best describe your event:</p>
+        <p>
+            Highlight the merits of your event. Please select up to three themes that best describe your event.
+            These will appear as "tags" that will help advertise your event. Note that you can click on a theme
+            to see its definition.
+        </p>
         <div class="accordion" id="themesAccordian">
             @foreach (var theme in ViewBag.Themes)
             {
@@ -52,15 +56,16 @@
             }
         </div>
         <p class="mt-3">
-            Does your event help our student body develop any of our University's Five Core Competencies?
-            (choose at most one)
+            For assessment purposes, can you tell us whether your event helps our student body develop any of
+            our University's Five Core Competencies? Please choose all that apply, and again, you can click
+            on a Core Competency to see its explanation.
         </p>
         <div class="accordion" id="ccAccordian">
             <div class="card">
                 <div class="card-header bg-white" id="cc-0">
                     <div class="form-check form-check-inline">
                         <input type="checkbox" data-cc-index="0" class="form-check-input"
-                               @if (Model.CoreCompetency == "Written Communication") { @: checked
+                               @if (Model.CoreCompetency?.Contains("Written Communication") == true) { @: checked
                                } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc0"
@@ -84,7 +89,7 @@
                 <div class="card-header bg-white" id="cc-1">
                     <div class="form-check form-check-inline">
                         <input type="checkbox" data-cc-index="1" class="form-check-input"
-                               @if (Model.CoreCompetency == "Oral Communication") { @: checked
+                               @if (Model.CoreCompetency?.Contains("Oral Communication") == true) { @: checked
                                } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc1"
@@ -110,7 +115,7 @@
                 <div class="card-header bg-white" id="cc-2">
                     <div class="form-check form-check-inline">
                         <input type="checkbox" data-cc-index="2" class="form-check-input"
-                               @if (Model.CoreCompetency == "Quantitative Reasoning") { @: checked
+                               @if (Model.CoreCompetency?.Contains("Quantitative Reasoning") == true) { @: checked
                                } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc2"
@@ -135,7 +140,7 @@
                 <div class="card-header bg-white" id="cc-3">
                     <div class="form-check form-check-inline">
                         <input type="checkbox" data-cc-index="3" class="form-check-input"
-                               @if (Model.CoreCompetency == "Information Literacy") { @: checked
+                               @if (Model.CoreCompetency?.Contains("Information Literacy") == true) { @: checked
                                } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc3"
@@ -160,7 +165,7 @@
                 <div class="card-header bg-white" id="cc-4">
                     <div class="form-check form-check-inline">
                         <input type="checkbox" data-cc-index="4" class="form-check-input"
-                               @if (Model.CoreCompetency == "Citical Thinking") { @: checked
+                               @if (Model.CoreCompetency?.Contains("Citical Thinking") == true) { @: checked
                                } />
                         <button class="btn btn-link btn-block text-left shadow-none" type="button"
                                 data-toggle="collapse" data-target="#collapse-cc4"
@@ -200,12 +205,6 @@
             else
                 $("input[data-theme-id]").prop("disabled", false);
         }
-        function checkCCLimit() {
-            if ($("[data-cc-index]:checked").length >= 1)
-                $("input[data-cc-index]:not(':checked')").prop("disabled", true);
-            else
-                $("input[data-cc-index]").prop("disabled", false);
-        }
         $(function () {
             $("input[data-theme-id]").each(function () {
                 if (@(Json.Serialize(ViewBag.SelectedThemeIds)).includes(parseInt($(this).attr("data-theme-id"))))
@@ -239,24 +238,16 @@
                 if ($(this).prop("checked")) {
                     $.ajax({
                         url: `@Context.Request.PathBase/MyEvents/@Model.Id/CoreCompetency/${ccIndex}`,
-                        method: "put",
-                        success: function () {
-                            checkCCLimit();
-                        }
+                        method: "put"
                     });
                 }
                 else {
                     $.ajax({
                         url: `@Context.Request.PathBase/MyEvents/@Model.Id/CoreCompetency/${ccIndex}`,
-                        method: "delete",
-                        success: function () {
-                            console.log(`Core Compentency ${ccIndex} removed.`);
-                        }
+                        method: "delete"
                     });
                 }
-                checkCCLimit();
             });
-            checkCCLimit();
         });
     </script>
 }

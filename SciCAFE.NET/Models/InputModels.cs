@@ -110,7 +110,8 @@ namespace SciCAFE.NET.Models
     public class EventInputModel
     {
         [Required]
-        [StringLength(60, ErrorMessage = "The {0} value cannot exceed {1} characters. ")]
+        [Display(Name = "Event Name")]
+        [StringLength(80, ErrorMessage = "The {0} value cannot exceed {1} characters. ")]
         public string Name { get; set; }
 
         public string Location { get; set; }
@@ -126,20 +127,21 @@ namespace SciCAFE.NET.Models
         [DataType(DataType.DateTime)]
         public DateTime EndTime { get; set; } = DateTime.Today;
 
-        [Display(Name = "Category")]
+        [Display(Name = "Please choose the category that best describes the event")]
         public int? CategoryId { get; set; }
 
-        [Display(Name = "Affiliation(s)")]
+        [Display(Name = "Program Affiliation(s)")]
         public List<int> ProgramIds { get; set; }
 
-        [Display(Name = "Target Audience")]
+        [Display(Name = "Who is your target audience?")]
         public string TargetAudience { get; set; }
     }
 
     public class RewardInputModel
     {
         [Required]
-        [StringLength(60, ErrorMessage = "The {0} value cannot exceed {1} characters. ")]
+        [Display(Name = "Reward Name")]
+        [StringLength(80, ErrorMessage = "The {0} value cannot exceed {1} characters. ")]
         public string Name { get; set; }
 
         [DataType(DataType.Date)]
@@ -147,6 +149,7 @@ namespace SciCAFE.NET.Models
         public DateTime? ExpireDate { get; set; }
 
         [Required]
+        [Display(Name = "Event Description")]
         public string Description { get; set; }
     }
 }
