@@ -80,5 +80,16 @@ namespace SciCAFE.NET.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Delete(int id)
+        {
+            var theme = _eventService.GetTheme(id);
+            theme.IsDeleted = true;
+            _eventService.SaveChanges();
+
+            _logger.LogInformation("{user} deleted theme {theme}", User.Identity.Name, id);
+
+            return RedirectToAction("Index");
+        }
     }
 }

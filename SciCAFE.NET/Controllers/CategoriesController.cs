@@ -52,7 +52,7 @@ namespace SciCAFE.NET.Controllers
             _eventService.AddCategory(category);
             _eventService.SaveChanges();
 
-            _logger.LogInformation("{user} added category {category}", User.Identity.Name, category.Name);
+            _logger.LogInformation("{user} added category {category}", User.Identity.Name, category.Id);
 
             return RedirectToAction("Index");
         }
@@ -76,7 +76,18 @@ namespace SciCAFE.NET.Controllers
             category.AdditionalInfo = input.AdditionalInfo;
             _eventService.SaveChanges();
 
-            _logger.LogInformation("{user} edited category {category}", User.Identity.Name, category.Name);
+            _logger.LogInformation("{user} edited category {category}", User.Identity.Name, id);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var category = _eventService.GetCategory(id);
+            category.IsDeleted = true;
+            _eventService.SaveChanges();
+
+            _logger.LogInformation("{user} deleted category {category}", User.Identity.Name, id);
 
             return RedirectToAction("Index");
         }

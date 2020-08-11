@@ -9,6 +9,10 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Themes</a></li>
         <li class="breadcrumb-item active">@Model.Name</li>
+        <li class="ml-auto">
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm"
+               title="Remove"><i class='far fa-trash-alt'></i></a>
+        </li>
     </ol>
 </nav>
 
