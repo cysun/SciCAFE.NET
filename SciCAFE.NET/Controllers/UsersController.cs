@@ -119,12 +119,5 @@ namespace SciCAFE.NET.Controllers
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return await _userManager.ResetPasswordAsync(user, token, newPassword);
         }
-
-        [Authorize]
-        [HttpGet("Users/PrefixSearch")]
-        public List<UserViewModel> PrefixSearch([FromQuery] string q)
-        {
-            return _mapper.Map<List<User>, List<UserViewModel>>(_userService.SearchUsersByPrefix(q));
-        }
     }
 }
