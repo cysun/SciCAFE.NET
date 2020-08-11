@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,6 +20,7 @@ namespace SciCAFE.NET.Services
         public string AppUrl { get; set; }
         public string Host { get; set; }
         public int Port { get; set; }
+        public bool RequireAuthentication { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string SenderName { get; set; }
@@ -159,8 +161,10 @@ namespace SciCAFE.NET.Services
         {
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync(_settings.Host, _settings.Port, false);
-                await client.AuthenticateAsync(_settings.Username, _settings.Password);
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.None);
+                if (_settings.RequireAuthentication)
+                    await client.AuthenticateAsync(_settings.Username, _settings.Password);
                 await client.SendAsync(msg);
                 await client.DisconnectAsync(true);
             }

@@ -10,6 +10,7 @@
     "AppUrl": "http://localhost:5003",
     "Host": "localhost",
     "Port": 25,
+    "RequireAuthentication": true,
     "Username": "cysun@localhost.localdomain",
     "Password": "abcd",
     "SenderName": "SciCAFE Admin",
