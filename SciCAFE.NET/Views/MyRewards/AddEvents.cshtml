@@ -1,0 +1,86 @@
+﻿@model Reward
+@{
+    ViewData["Title"] = "Reward Events";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
+        <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@Model.Id">@Model.Name</a></li>
+        <li class="breadcrumb-item active">Qualifying Events</li>
+    </ol>
+</nav>
+
+<form method="post">
+    <div class="row">
+        <div class="form-group col-md-8">
+            <label>Add Event</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-calendar-plus"></i></div>
+                </div>
+                <input id="add" type="text" class="form-control basicAutoComplete"
+                       placeholder="Search event to add" autocomplete="off">
+            </div>
+        </div>
+        <div class="col-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Event Name</th><th class="d-none d-md-table-cell">Event Time</th><th></th></tr>
+                </thead>
+                <tbody id="events">
+                    @foreach (var rewardEvent in Model.RewardEvents)
+                    {
+                        <tr data-event-id="@rewardEvent.EventId">
+                            <td>@rewardEvent.Event.Name</td>
+                            <td class="d-none d-md-table-cell">@rewardEvent.Event.StartTime.ToString("g")</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+    <button class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.5/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <script>
+        $(function () {
+            $("#add").keydown(function (evt) {
+                if (evt.keyCode == 13) {
+                    evt.preventDefault();
+                    return false;
+                }
+            });
+            $("#add").autoComplete({
+                minLength: 2,
+                resolverSettings: {
+                    url: "@Context.Request.PathBase/Events/Search"
+                },
+                formatResult: function (item) {
+                    return {
+                        text: item.name
+                    }
+                }
+            });
+            $("#add").on("autocomplete.select", function (evt, item) {
+                var row = $(`<tr>
+                                 <td>${item.name}</td>
+                                 <td class="d-none d-md-table-cell">${item.startTimeString}</td>
+                             </tr>`);
+                    var btn = $("<button class='btn btn-danger btn-sm'><i class='far fa-trash-alt'></i></button>");
+                    btn.click(function () {
+                        row.remove();
+                    });
+                    var cell = $("<td></td>").append(btn);
+                    row.append(cell);
+                    row.append(`<input type="hidden" name="EventIds" value="${item.id}">`);
+                    $("#events").append(row);
+                $("#add").val("");
+            });
+        });
+    </script>
+}

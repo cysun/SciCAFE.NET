@@ -23,7 +23,7 @@ ALTER TABLE "Events" ADD COLUMN tsv tsvector;
 CREATE INDEX "EventTsIndex" ON "Events" USING GIN(tsv);
 CREATE TRIGGER "EventTsTrigger"
     BEFORE INSERT OR UPDATE ON "Events"
-    FOR EACH ROW EXECUTE FUNCTION
+    FOR EACH ROW EXECUTE PROCEDURE
     tsvector_update_trigger(tsv, 'pg_catalog.english', "Name");
 
 CREATE OR REPLACE FUNCTION "SearchEvents"(q varchar) RETURNS SETOF "Events" AS

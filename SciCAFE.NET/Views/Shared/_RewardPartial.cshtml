@@ -24,7 +24,8 @@
                 @foreach (var rewardEvent in Model.RewardEvents)
                 {
                     <tr data-event-id="@rewardEvent.EventId">
-                        <td>@rewardEvent.Event.Name</td>
+                        <td><a asp-controller="Events" asp-action="View"
+                               asp-route-id="@rewardEvent.Event.Id">@rewardEvent.Event.Name</a></td>
                         <td class="d-none d-md-table-cell">@rewardEvent.Event.StartTime.ToString("g")</td>
                     </tr>
                 }

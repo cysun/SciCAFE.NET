@@ -163,6 +163,45 @@ namespace SciCAFE.NET.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AddEventsAsync(int id)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanAddQualifyingEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            return View(reward);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddEventsAsync(int id, List<int> eventIds)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanAddQualifyingEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            var currentEventIds = reward.RewardEvents.Select(r => r.EventId).ToHashSet();
+            var newEventIds = eventIds.Except(currentEventIds).ToList();
+            if (newEventIds.Count > 0)
+            {
+                reward.RewardEvents.AddRange(newEventIds.Select(eventId => new RewardEvent
+                {
+                    RewardId = id,
+                    EventId = eventId
+                }));
+                _rewardService.SaveChanges();
+                _logger.LogInformation("{user} added {events} to reward {reward}", User.Identity.Name, newEventIds, id);
+            }
+
+            return RedirectToAction("AddEvents");
+        }
+
         [HttpPut("MyRewards/{rewardId}/NumOfEventsToQualify/{n}")]
         public async Task<IActionResult> SetNumOfEvents(int rewardId, int n)
         {
