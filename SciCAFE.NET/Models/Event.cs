@@ -97,6 +97,18 @@ namespace SciCAFE.NET.Models
         public Theme Theme { get; set; }
     }
 
+    [Table("EventAttachments")]
+    public class EventAttachment
+    {
+        public int Id { get; set; }
+
+        public int EventId { get; set; }
+        public Event Event { get; set; }
+
+        public int FileId { get; set; }
+        public File File { get; set; }
+    }
+
     public class Attendance
     {
         public int Id { get; set; }

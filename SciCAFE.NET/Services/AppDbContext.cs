@@ -19,6 +19,7 @@ namespace SciCAFE.NET.Services
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Reward> Rewards { get; set; }
         public DbSet<RewardEvent> RewardEvents { get; set; }
+        public DbSet<File> Files { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,15 +40,25 @@ namespace SciCAFE.NET.Services
             modelBuilder.Entity<Event>().HasIndex(e => e.Name);
 
             modelBuilder.Entity<EventProgram>().HasKey(e => new { e.EventId, e.ProgramId });
+            modelBuilder.Entity<EventProgram>().HasQueryFilter(p => !p.Event.IsDeleted);
 
             modelBuilder.Entity<EventTheme>().HasKey(e => new { e.EventId, e.ThemeId });
+            modelBuilder.Entity<EventTheme>().HasQueryFilter(t => !t.Event.IsDeleted);
+
+            modelBuilder.Entity<EventAttachment>().HasAlternateKey(a => new { a.EventId, a.FileId });
+            modelBuilder.Entity<EventAttachment>().HasQueryFilter(a => !a.Event.IsDeleted);
 
             modelBuilder.Entity<Attendance>().HasAlternateKey(a => new { a.EventId, a.AttendeeId });
+            modelBuilder.Entity<Attendance>().HasQueryFilter(a => !a.Event.IsDeleted);
 
             modelBuilder.Entity<Reward>().HasQueryFilter(r => !r.IsDeleted);
             modelBuilder.Entity<Reward>().Property(r => r.NumOfEventsToQualify).HasDefaultValue(1);
 
+            modelBuilder.Entity<RewardAttachment>().HasAlternateKey(a => new { a.RewardId, a.FileId });
+            modelBuilder.Entity<RewardAttachment>().HasQueryFilter(a => !a.Reward.IsDeleted);
+
             modelBuilder.Entity<RewardEvent>().HasKey(r => new { r.RewardId, r.EventId });
+            modelBuilder.Entity<RewardEvent>().HasQueryFilter(r => !r.Event.IsDeleted);
         }
     }
 }

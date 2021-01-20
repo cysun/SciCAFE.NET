@@ -32,6 +32,18 @@ namespace SciCAFE.NET.Models
         public bool IsDeleted { get; set; }
     }
 
+    [Table("RewardAttachments")]
+    public class RewardAttachment
+    {
+        public int Id { get; set; }
+
+        public int RewardId { get; set; }
+        public Reward Reward { get; set; }
+
+        public int FileId { get; set; }
+        public File File { get; set; }
+    }
+
     [Table("RewardEvents")]
     public class RewardEvent
     {

@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using SciCAFE.NET.Models;
 using Scriban;
 
 namespace SciCAFE.NET.Services
@@ -45,7 +44,7 @@ namespace SciCAFE.NET.Services
             _logger = logger;
         }
 
-        public MimeMessage CreateEmailVerificationMessage(User user, string link)
+        public MimeMessage CreateEmailVerificationMessage(Models.User user, string link)
         {
             var msg = new MimeMessage();
             msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
@@ -63,7 +62,7 @@ namespace SciCAFE.NET.Services
             return msg;
         }
 
-        public MimeMessage CreateReviewEventMessage(Event evnt)
+        public MimeMessage CreateReviewEventMessage(Models.Event evnt)
         {
             var reviewers = _userService.GetEventReviewers();
             if (reviewers.Count == 0)
@@ -90,7 +89,7 @@ namespace SciCAFE.NET.Services
             return msg;
         }
 
-        public MimeMessage CreateEventReviewedMessage(Event evnt)
+        public MimeMessage CreateEventReviewedMessage(Models.Event evnt)
         {
             var msg = new MimeMessage();
             msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
@@ -110,7 +109,7 @@ namespace SciCAFE.NET.Services
             return msg;
         }
 
-        public MimeMessage CreateReviewRewardMessage(Reward reward)
+        public MimeMessage CreateReviewRewardMessage(Models.Reward reward)
         {
             var reviewers = _userService.GetRewardReviewers();
             if (reviewers.Count == 0)
@@ -137,7 +136,7 @@ namespace SciCAFE.NET.Services
             return msg;
         }
 
-        public MimeMessage CreateRewardReviewedMessage(Reward reward)
+        public MimeMessage CreateRewardReviewedMessage(Models.Reward reward)
         {
             var msg = new MimeMessage();
             msg.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
