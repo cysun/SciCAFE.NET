@@ -3,9 +3,6 @@
     ViewData["Title"] = "Edit Reward";
 }
 
-@section StyleSheets{
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-}
 <nav>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
@@ -64,13 +61,14 @@
     </div>
 </div>
 
+@section StyleSheets{
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+}
 @section Scripts{
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-    <script>
-        $(function () {
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script>$(function () {
             $("textarea").summernote({
                 height: 200
             });
-        });
-    </script>
+        });</script>
 }

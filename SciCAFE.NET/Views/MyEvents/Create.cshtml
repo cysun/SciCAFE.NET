@@ -3,10 +3,6 @@
     ViewData["Title"] = "Create Event";
 }
 
-@section StyleSheets{
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-}
 <nav>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">My Events</a></li>
@@ -89,15 +85,17 @@
     </div>
 </div>
 
+@section StyleSheets{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+}
 @section Scripts{
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-    <script>
-        $(function () {
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script>$(function () {
             $("select").selectpicker();
             $("textarea").summernote({
                 height: 400
             });
-        });
-    </script>
+        });</script>
 }
