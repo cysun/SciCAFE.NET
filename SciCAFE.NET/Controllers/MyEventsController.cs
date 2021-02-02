@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,7 @@ namespace SciCAFE.NET.Controllers
     {
         private readonly EventService _eventService;
         private readonly ProgramService _programService;
+        private readonly FileService _fileService;
         private readonly EmailSender _emailSender;
 
         private readonly IAuthorizationService _authorizationService;
@@ -28,11 +30,12 @@ namespace SciCAFE.NET.Controllers
         private readonly ILogger<MyEventsController> _logger;
 
         public MyEventsController(EventService eventService, ProgramService programService,
-            EmailSender emailSender, IAuthorizationService authorizationService,
+            FileService fileService, EmailSender emailSender, IAuthorizationService authorizationService,
             IMapper mapper, ILogger<MyEventsController> logger)
         {
             _eventService = eventService;
             _programService = programService;
+            _fileService = fileService;
             _emailSender = emailSender;
             _authorizationService = authorizationService;
             _mapper = mapper;
@@ -163,14 +166,64 @@ namespace SciCAFE.NET.Controllers
         }
 
         [HttpGet]
-        public IActionResult AdditionalInfo(int id)
+        public async Task<IActionResult> AdditionalInfoAsync(int id)
         {
             var evnt = _eventService.GetEvent(id);
             if (evnt == null) return NotFound();
 
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
             ViewBag.Themes = _eventService.GetThemes();
             ViewBag.SelectedThemeIds = evnt.EventThemes.Select(t => t.ThemeId).ToList();
             return View(evnt);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AttachmentsAsync(int id)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            return View(evnt);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AttachmentsAsync(int id, IFormFile[] uploadedFiles)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            if (evnt.EventAttachments.Count + uploadedFiles.Length > 3)
+                return View("Error", new ErrorViewModel
+                {
+                    Message = "Number of attachments exceeded limit."
+                });
+
+            foreach (var uploadedFile in uploadedFiles)
+            {
+                var file = _fileService.UploadFile(uploadedFile);
+                evnt.EventAttachments.Add(new EventAttachment
+                {
+                    Event = evnt,
+                    File = file
+                });
+                _logger.LogInformation("{user} uploaded file {file} to event {event}",
+                    User.Identity.Name, file.Id, evnt.Id);
+            }
+
+            _eventService.SaveChanges();
+
+            return Ok();
         }
 
         [HttpGet]

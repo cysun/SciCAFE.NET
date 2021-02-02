@@ -1,0 +1,72 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model Event
+@{
+    ViewData["Title"] = "Edit Event";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Events</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Edit" asp-route-id="@Model.Id">Basic Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-action="AdditionalInfo" asp-route-id="@Model.Id">Additional Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Attachments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Summary" asp-route-id="@Model.Id">Summary</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <p>
+            You may upload up to 3 file attachments to this event:
+        </p>
+        <table class="table">
+            <tbody>
+                @foreach (var attachment in Model.EventAttachments)
+                {
+                    <tr>
+                        <td>@attachment.File.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <form id="uploadForm" class="dropzone" method="post" enctype="multipart/form-data">
+        </form>
+    </div>
+</div>
+
+@section StyleSheets{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/dropzone.min.css"
+          integrity="sha512-3g+prZHHfmnvE1HBLwUnVuunaPOob7dpksI7/v6UnF/rnKGwHf/GdEq9K7iEN7qTtW+S0iivTcGpeTBqqB04wA=="
+          crossorigin="anonymous" />
+}
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/min/dropzone.min.js"
+            integrity="sha512-9WciDs0XP20sojTJ9E7mChDXy6pcO0qHpwbEJID1YVavz2H6QBz5eLoDD8lseZOb2yGT8xDNIV7HIe1ZbuiDWg=="
+            crossorigin="anonymous"></script>
+    <script>
+        Dropzone.options.uploadForm = {
+            uploadMultiple: true,
+            // uploadMultiple is true, Dropzone add [] to paramName. For some reason ASP.NET Core does not
+            // bind it to a collection like for other parameter types. The paramName functio trick is from
+            // https://stackoverflow.com/questions/58815724/how-to-integrate-dropzone-js-with-asp-net-core-mvc
+            paramName: () => "uploadedFiles",
+            parallelUploads: 3,
+            queuecomplete: function () {
+                location.reload();
+            }
+        };
+    </script>
+}

@@ -75,6 +75,8 @@ namespace SciCAFE.NET
             services.AddScoped<IAuthorizationHandler, CanReviewRewardHandler>();
             services.AddScoped<IAuthorizationHandler, CanAddQualifyingEventHandler>();
 
+            services.AddRouting(options => options.LowercaseUrls = true);
+
             services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
@@ -84,6 +86,9 @@ namespace SciCAFE.NET
             services.AddScoped<ProgramService>();
             services.AddScoped<EventService>();
             services.AddScoped<RewardService>();
+
+            services.Configure<FileSettings>(Configuration.GetSection("File"));
+            services.AddScoped<FileService>();
         }
 
         public void Configure(IApplicationBuilder app)

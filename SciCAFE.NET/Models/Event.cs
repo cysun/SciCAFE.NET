@@ -59,6 +59,8 @@ namespace SciCAFE.NET.Models
 
         public List<EventTheme> EventThemes { get; set; } = new List<EventTheme>();
 
+        public List<EventAttachment> EventAttachments { get; set; } = new List<EventAttachment>();
+
         [MaxLength(255)]
         public string TargetAudience { get; set; }
 

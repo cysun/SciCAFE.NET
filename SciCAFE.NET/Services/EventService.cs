@@ -57,6 +57,7 @@ namespace SciCAFE.NET.Services
                 .Include(e => e.Category)
                 .Include(e => e.EventPrograms).ThenInclude(p => p.Program)
                 .Include(e => e.EventThemes).ThenInclude(t => t.Theme)
+                .Include(e => e.EventAttachments).ThenInclude(a => a.File)
                 .SingleOrDefault();
         }
 

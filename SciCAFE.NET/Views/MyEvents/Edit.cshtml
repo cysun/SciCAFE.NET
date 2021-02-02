@@ -21,6 +21,10 @@
                    asp-route-id="@Context.Request.RouteValues["id"]">Additional Info</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" asp-action="Attachments"
+                   asp-route-id="@Context.Request.RouteValues["id"]">Attachments</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" asp-action="Summary"
                    asp-route-id="@Context.Request.RouteValues["id"]">Summary</a>
             </li>

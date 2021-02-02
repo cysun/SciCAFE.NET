@@ -16,6 +16,11 @@
     "SenderName": "SciCAFE Admin",
     "SenderEmail": "scicafe@localhost.localdomain"
   },
+  "File": {
+    "Directory": "D:/Temp/SciCAFE.NET/files",
+    "AttachmentTypes": [ ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx", ".zip" ],
+    "TextTypes": [ ".java", ".sql" ]
+  },
   "Serilog": {
     "Using": [
       "Serilog.Sinks.File"
