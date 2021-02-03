@@ -58,6 +58,9 @@ else
                         }
                     </td>
                     <td>
+                        <button class="delete btn btn-danger btn-sm mr-2" data-id="@reward.Id" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
                         @if ((await authorizationService.AuthorizeAsync(User, reward, Policy.CanEditReward)).Succeeded)
                         {
                             <a class="btn btn-primary btn-sm mr-2" asp-action="Edit" asp-route-id="@reward.Id"
@@ -73,4 +76,17 @@ else
             }
         </tbody>
     </table>
+}
+
+@section Scripts{
+    <script>
+        $(function () {
+            $(".delete").click(function () {
+                if (confirm("Do you want to delete this reward?")) {
+                    var id = $(this).attr("data-id");
+                    window.location.href = `@Context.Request.PathBase/MyRewards/Delete/${id}`;
+                }
+            });
+        });
+    </script>
 }

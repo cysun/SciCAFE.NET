@@ -57,21 +57,27 @@ namespace SciCAFE.NET
                             (c.Type == ClaimType.IsAdministrator || c.Type == ClaimType.IsRewardReviewer) && c.Value == "true")));
                 options.AddPolicy(Policy.CanEditEvent, policyBuilder =>
                     policyBuilder.AddRequirements(new CanEditEventRequirement()));
+                options.AddPolicy(Policy.CanDeleteEvent, policyBuilder =>
+                    policyBuilder.AddRequirements(new CanDeleteEventRequirement()));
                 options.AddPolicy(Policy.CanReviewEvent, policyBuilder =>
                     policyBuilder.AddRequirements(new CanReviewEventRequirement()));
                 options.AddPolicy(Policy.CanManageAttendance, policyBuilder =>
                     policyBuilder.AddRequirements(new CanManageAttendanceRequirement()));
                 options.AddPolicy(Policy.CanEditReward, policyBuilder =>
                     policyBuilder.AddRequirements(new CanEditRewardRequirement()));
+                options.AddPolicy(Policy.CanDeleteReward, policyBuilder =>
+                    policyBuilder.AddRequirements(new CanDeleteRewardRequirement()));
                 options.AddPolicy(Policy.CanReviewReward, policyBuilder =>
                     policyBuilder.AddRequirements(new CanReviewRewardRequirement()));
                 options.AddPolicy(Policy.CanAddQualifyingEvent, policyBuilder =>
                     policyBuilder.AddRequirements(new CanAddQualifyingEventRequirement()));
             });
             services.AddScoped<IAuthorizationHandler, CanEditEventHandler>();
+            services.AddScoped<IAuthorizationHandler, CanDeleteEventHandler>();
             services.AddScoped<IAuthorizationHandler, CanReviewEventHandler>();
             services.AddScoped<IAuthorizationHandler, CanManageAttendanceHandler>();
             services.AddScoped<IAuthorizationHandler, CanEditRewardHandler>();
+            services.AddScoped<IAuthorizationHandler, CanDeleteRewardHandler>();
             services.AddScoped<IAuthorizationHandler, CanReviewRewardHandler>();
             services.AddScoped<IAuthorizationHandler, CanAddQualifyingEventHandler>();
 

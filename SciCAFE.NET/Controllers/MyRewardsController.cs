@@ -76,6 +76,38 @@ namespace SciCAFE.NET.Controllers
             return saveDraft ? RedirectToAction("Index") : RedirectToAction("Attachments", new { id = reward.Id });
         }
 
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanDeleteReward);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            if (reward.Review?.IsApproved == true)
+            {
+                reward.IsDeleted = true;
+                _rewardService.SaveChanges();
+            }
+            else
+            {
+                var files = reward.RewardAttachments.Select(a => a.File).ToList();
+                _rewardService.DeleteReward(reward);
+                _rewardService.SaveChanges();
+
+                foreach (var file in files)
+                {
+                    if (!_rewardService.IsAttachedToReward(file.Id))
+                        _fileService.DeleteFile(file.Id);
+                }
+            }
+
+            _logger.LogInformation("{user} deleted reward {reward}", User.Identity.Name, id);
+
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditAsync(int id)
         {

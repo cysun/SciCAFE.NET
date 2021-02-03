@@ -33,7 +33,11 @@ namespace SciCAFE.NET.Controllers
         public IActionResult View(int id)
         {
             var evnt = _eventService.GetEvent(id);
-            if (evnt == null) return NotFound();
+            if (evnt == null)
+                return View("Error", new ErrorViewModel
+                {
+                    Message = "This event does not exist."
+                });
 
             if (evnt.Review?.IsApproved != true)
                 return Forbid();

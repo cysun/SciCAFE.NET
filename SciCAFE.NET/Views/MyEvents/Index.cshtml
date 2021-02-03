@@ -58,6 +58,9 @@ else
                         }
                     </td>
                     <td>
+                        <button class="delete btn btn-danger btn-sm mr-2" data-id="@evnt.Id" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
                         <button class="clone btn btn-primary btn-sm mr-2" data-id="@evnt.Id" title="Clone">
                             <i class="fas fa-copy"></i>
                         </button>
@@ -80,13 +83,19 @@ else
 
 @section Scripts{
     <script>
-    $(function () {
-        $(".clone").click(function () {
-            if (confirm("Do you want to clone this event?")) {
-                var id = $(this).attr("data-id");
-                window.location.href = `@Context.Request.PathBase/MyEvents/Clone/${id}`;
-            }
+        $(function () {
+            $(".clone").click(function () {
+                if (confirm("Do you want to clone this event?")) {
+                    var id = $(this).attr("data-id");
+                    window.location.href = `@Context.Request.PathBase/MyEvents/Clone/${id}`;
+                }
+            });
+            $(".delete").click(function () {
+                if (confirm("Do you want to delete this event?")) {
+                    var id = $(this).attr("data-id");
+                    window.location.href = `@Context.Request.PathBase/MyEvents/Delete/${id}`;
+                }
+            });
         });
-    });
     </script>
 }

@@ -56,6 +56,8 @@ namespace SciCAFE.NET.Services
 
         public void AddReward(Reward reward) => _db.Rewards.Add(reward);
 
+        public void DeleteReward(Reward reward) => _db.Rewards.Remove(reward);
+
         public RewardEvent GetRewardEvent(int rewardId, int eventId)
         {
             return _db.RewardEvents.Where(r => r.RewardId == rewardId && r.EventId == eventId).SingleOrDefault();

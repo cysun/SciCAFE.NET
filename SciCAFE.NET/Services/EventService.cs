@@ -63,6 +63,8 @@ namespace SciCAFE.NET.Services
 
         public void AddEvent(Event evnt) => _db.Events.Add(evnt);
 
+        public void DeleteEvent(Event evnt) => _db.Events.Remove(evnt);
+
         public List<Attendance> GetEventAttendances(int eventId)
         {
             return _db.Attendances.Where(a => a.EventId == eventId)

@@ -116,6 +116,38 @@ namespace SciCAFE.NET.Controllers
             return RedirectToAction("Edit", new { id = newEvent.Id });
         }
 
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanDeleteEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            if (evnt.Review?.IsApproved == true)
+            {
+                evnt.IsDeleted = true;
+                _eventService.SaveChanges();
+            }
+            else
+            {
+                var files = evnt.EventAttachments.Select(a => a.File).ToList();
+                _eventService.DeleteEvent(evnt);
+                _eventService.SaveChanges();
+
+                foreach (var file in files)
+                {
+                    if (!_eventService.IsAttachedToEvent(file.Id))
+                        _fileService.DeleteFile(file.Id);
+                }
+            }
+
+            _logger.LogInformation("{user} deleted event {event}", User.Identity.Name, id);
+
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditAsync(int id)
         {

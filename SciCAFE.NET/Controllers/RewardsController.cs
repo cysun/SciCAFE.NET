@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SciCAFE.NET.Models;
 using SciCAFE.NET.Services;
 
 namespace SciCAFE.NET.Controllers
@@ -31,7 +32,11 @@ namespace SciCAFE.NET.Controllers
         public IActionResult View(int id)
         {
             var reward = _rewardService.GetReward(id);
-            if (reward == null) return NotFound();
+            if (reward == null)
+                return View("Error", new ErrorViewModel
+                {
+                    Message = "This reward does not exist."
+                });
 
             if (reward.Review?.IsApproved != true)
                 return Forbid();

@@ -257,7 +257,7 @@ CREATE INDEX "IX_Rewards_Review_ReviewerId" ON "Rewards" ("Review_ReviewerId");
 CREATE UNIQUE INDEX "IX_Themes_Name" ON "Themes" ("Name");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20210120185838_InitialSchema', '5.0.2');
+VALUES ('20210203162309_InitialSchema', '5.0.2');
 
 COMMIT;
 
