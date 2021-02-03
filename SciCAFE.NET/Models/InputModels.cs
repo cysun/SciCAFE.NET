@@ -149,7 +149,6 @@ namespace SciCAFE.NET.Models
         public DateTime? ExpireDate { get; set; }
 
         [Required]
-        [Display(Name = "Event Description")]
         public string Description { get; set; }
     }
 }

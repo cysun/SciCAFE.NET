@@ -17,6 +17,8 @@ namespace SciCAFE.NET.Models
 
         public string Description { get; set; }
 
+        public List<RewardAttachment> RewardAttachments { get; set; } = new List<RewardAttachment>();
+
         public int NumOfEventsToQualify { get; set; } = 1;
 
         public List<RewardEvent> RewardEvents { get; set; } = new List<RewardEvent>();

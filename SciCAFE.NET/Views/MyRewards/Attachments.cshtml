@@ -1,0 +1,101 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model Reward
+@{
+    ViewData["Title"] = "Edit Reward";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Edit" asp-route-id="@Model.Id">Basic Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Attachments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Events" asp-route-id="@Model.Id">Qualifying Events</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Summary" asp-route-id="@Model.Id">Summary</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <p>
+            You may upload up to 3 file attachments to this reward:
+        </p>
+        <table class="table table-hover border-bottom">
+            <tbody>
+                @foreach (var attachment in Model.RewardAttachments)
+                {
+                    <tr>
+                        <td>
+                            <a href="@Context.Request.PathBase/Attachment/Reward/View/@attachment.Id">@attachment.File.Name</a>
+                        </td>
+                        <td>
+                            <button data-id="@attachment.Id" class="delete btn btn-danger btn-sm py-0 mr-2">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <a href="@Context.Request.PathBase/Attachment/Reward/Download/@attachment.Id"
+                               class="btn btn-primary btn-sm py-0">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <form id="uploadForm" asp-action="UploadAttachments" asp-route-id="@Model.Id"
+              class="dropzone" method="post" enctype="multipart/form-data">
+        </form>
+        <div class="row mt-3">
+            <div class="col-4">
+                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+            </div>
+            <div class="col-8 text-right">
+                <a class="btn btn-secondary" asp-action="Index">Save Draft</a>
+                <a class="btn btn-primary" asp-action="Events" asp-route-id="@Model.Id">Next</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section StyleSheets{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/dropzone.min.css"
+          integrity="sha512-3g+prZHHfmnvE1HBLwUnVuunaPOob7dpksI7/v6UnF/rnKGwHf/GdEq9K7iEN7qTtW+S0iivTcGpeTBqqB04wA=="
+          crossorigin="anonymous" />
+}
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/min/dropzone.min.js"
+            integrity="sha512-9WciDs0XP20sojTJ9E7mChDXy6pcO0qHpwbEJID1YVavz2H6QBz5eLoDD8lseZOb2yGT8xDNIV7HIe1ZbuiDWg=="
+            crossorigin="anonymous"></script>
+    <script>
+        Dropzone.options.uploadForm = {
+            uploadMultiple: true,
+            // uploadMultiple is true, Dropzone add [] to paramName. For some reason ASP.NET Core does not
+            // bind it to a collection like for other parameter types. The paramName functio trick is from
+            // https://stackoverflow.com/questions/58815724/how-to-integrate-dropzone-js-with-asp-net-core-mvc
+            paramName: () => "uploadedFiles",
+            parallelUploads: 3,
+            queuecomplete: function () {
+                location.reload();
+            }
+        };
+        $(function () {
+            $(".delete").click(function () {
+                if (confirm("Are you sure you want to delete this file?")) {
+                    var attachmentId = $(this).attr("data-id");
+                    window.location.href = `@Context.Request.PathBase/MyRewards/DeleteAttachment/${attachmentId}`;
+                }
+            });
+        });
+    </script>
+}

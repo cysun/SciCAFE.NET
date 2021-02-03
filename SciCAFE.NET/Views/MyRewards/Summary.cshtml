@@ -15,12 +15,13 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
-                <a class="nav-link" asp-action="Edit"
-                   asp-route-id="@Context.Request.RouteValues["id"]">Basic Info</a>
+                <a class="nav-link" asp-action="Edit" asp-route-id="@Model.Id">Basic Info</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" asp-action="Events"
-                   asp-route-id="@Context.Request.RouteValues["id"]">Qualifying Events</a>
+                <a class="nav-link" asp-action="Attachments" asp-route-id="@Model.Id">Attachments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Events" asp-route-id="@Model.Id">Qualifying Events</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" href="#">Summary</a>

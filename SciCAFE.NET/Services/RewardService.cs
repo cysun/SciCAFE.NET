@@ -20,6 +20,7 @@ namespace SciCAFE.NET.Services
         {
             return _db.Rewards.Where(r => r.Id == id)
                 .Include(r => r.Creator)
+                .Include(r => r.RewardAttachments).ThenInclude(a => a.File)
                 .Include(r => r.RewardEvents).ThenInclude(e => e.Event)
                 .SingleOrDefault();
         }
@@ -65,6 +66,11 @@ namespace SciCAFE.NET.Services
         public void RemoveRewardEvent(RewardEvent rewardEvent) => _db.RewardEvents.Remove(rewardEvent);
 
         public RewardAttachment GetAttachment(int id) => _db.RewardAttachments.Find(id);
+
+        public bool IsAttachedToReward(int fileId)
+        {
+            return _db.RewardAttachments.Where(a => a.FileId == fileId).Count() > 0;
+        }
 
         public void SaveChanges() => _db.SaveChanges();
     }

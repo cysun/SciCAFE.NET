@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SciCAFE.NET.Models;
@@ -17,6 +18,7 @@ namespace SciCAFE.NET.Controllers
     public class MyRewardsController : Controller
     {
         private readonly RewardService _rewardService;
+        private readonly FileService _fileService;
         private readonly EmailSender _emailSender;
 
         private readonly IAuthorizationService _authorizationService;
@@ -24,10 +26,11 @@ namespace SciCAFE.NET.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<MyRewardsController> _logger;
 
-        public MyRewardsController(RewardService rewardService, EmailSender emailSender,
+        public MyRewardsController(RewardService rewardService, FileService fileService, EmailSender emailSender,
             IAuthorizationService authorizationService, IMapper mapper, ILogger<MyRewardsController> logger)
         {
             _rewardService = rewardService;
+            _fileService = fileService;
             _emailSender = emailSender;
             _authorizationService = authorizationService;
             _mapper = mapper;
@@ -70,7 +73,7 @@ namespace SciCAFE.NET.Controllers
 
             _logger.LogInformation("{user} created reward {reward}", User.Identity.Name, reward.Id);
 
-            return saveDraft ? RedirectToAction("Index") : RedirectToAction("Events", new { id = reward.Id });
+            return saveDraft ? RedirectToAction("Index") : RedirectToAction("Attachments", new { id = reward.Id });
         }
 
         [HttpGet]
@@ -103,7 +106,74 @@ namespace SciCAFE.NET.Controllers
 
             _logger.LogInformation("{user} edited reward {reward}", User.Identity.Name, reward.Id);
 
-            return saveDraft ? RedirectToAction("Index") : RedirectToAction("Events", new { id = reward.Id });
+            return saveDraft ? RedirectToAction("Index") : RedirectToAction("Attachments", new { id = reward.Id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AttachmentsAsync(int id)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanEditReward);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            return View(reward);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadAttachmentsAsync(int id, IFormFile[] uploadedFiles)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanEditReward);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            if (reward.RewardAttachments.Count + uploadedFiles.Length > 3)
+                return BadRequest();
+
+            foreach (var uploadedFile in uploadedFiles)
+            {
+                var file = _fileService.UploadFile(uploadedFile);
+                reward.RewardAttachments.Add(new RewardAttachment
+                {
+                    Reward = reward,
+                    File = file
+                });
+                _logger.LogInformation("{user} uploaded file {file} to reward {reward}",
+                    User.Identity.Name, file.Id, reward.Id);
+            }
+
+            _rewardService.SaveChanges();
+
+            return Ok();
+        }
+
+        public async Task<IActionResult> DeleteAttachmentAsync(int id)
+        {
+            var attachment = _rewardService.GetAttachment(id);
+            if (attachment == null) return NotFound();
+
+            var reward = _rewardService.GetReward(attachment.RewardId);
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanEditReward);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            reward.RewardAttachments.RemoveAll(a => a.Id == id);
+            _rewardService.SaveChanges();
+            _logger.LogInformation("{user} removed file {file} from reward {reward}",
+                User.Identity.Name, attachment.FileId, reward.Id);
+
+            if (!_rewardService.IsAttachedToReward(attachment.FileId))
+            {
+                _fileService.DeleteFile(attachment.FileId);
+                _logger.LogInformation("{user} deleted file {file}", User.Identity.Name, attachment.FileId);
+            }
+
+            return RedirectToAction("Attachments", new { id = reward.Id });
         }
 
         [HttpGet]
