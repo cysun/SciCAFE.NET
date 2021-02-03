@@ -105,6 +105,13 @@ namespace SciCAFE.NET.Services
 
         public void AddTheme(Theme theme) => _db.Themes.Add(theme);
 
+        public EventAttachment GetAttachment(int id) => _db.EventAttachments.Find(id);
+
+        public bool IsAttachedToEvent(int fileId)
+        {
+            return _db.EventAttachments.Where(a => a.FileId == fileId).Count() > 0;
+        }
+
         public void SaveChanges() => _db.SaveChanges();
     }
 }

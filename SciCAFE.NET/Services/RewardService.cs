@@ -64,6 +64,8 @@ namespace SciCAFE.NET.Services
 
         public void RemoveRewardEvent(RewardEvent rewardEvent) => _db.RewardEvents.Remove(rewardEvent);
 
+        public RewardAttachment GetAttachment(int id) => _db.RewardAttachments.Find(id);
+
         public void SaveChanges() => _db.SaveChanges();
     }
 }

@@ -19,7 +19,10 @@ namespace SciCAFE.NET.Services
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Reward> Rewards { get; set; }
         public DbSet<RewardEvent> RewardEvents { get; set; }
+
         public DbSet<File> Files { get; set; }
+        public DbSet<EventAttachment> EventAttachments { get; set; }
+        public DbSet<RewardAttachment> RewardAttachments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

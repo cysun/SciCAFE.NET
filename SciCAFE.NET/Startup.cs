@@ -75,8 +75,6 @@ namespace SciCAFE.NET
             services.AddScoped<IAuthorizationHandler, CanReviewRewardHandler>();
             services.AddScoped<IAuthorizationHandler, CanAddQualifyingEventHandler>();
 
-            services.AddRouting(options => options.LowercaseUrls = true);
-
             services.AddAutoMapper(config => config.AddProfile<MapperProfile>());
 
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
@@ -117,6 +115,11 @@ namespace SciCAFE.NET
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "attachment",
+                    pattern: "Attachment/{type}/{action}/{id}",
+                    defaults: new { controller = "Attachment" }
+                );
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -194,7 +194,7 @@ namespace SciCAFE.NET.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AttachmentsAsync(int id, IFormFile[] uploadedFiles)
+        public async Task<IActionResult> UploadAttachmentsAsync(int id, IFormFile[] uploadedFiles)
         {
             var evnt = _eventService.GetEvent(id);
             if (evnt == null) return NotFound();
@@ -204,10 +204,7 @@ namespace SciCAFE.NET.Controllers
                 return Forbid();
 
             if (evnt.EventAttachments.Count + uploadedFiles.Length > 3)
-                return View("Error", new ErrorViewModel
-                {
-                    Message = "Number of attachments exceeded limit."
-                });
+                return BadRequest();
 
             foreach (var uploadedFile in uploadedFiles)
             {
@@ -224,6 +221,30 @@ namespace SciCAFE.NET.Controllers
             _eventService.SaveChanges();
 
             return Ok();
+        }
+
+        public async Task<IActionResult> DeleteAttachmentAsync(int id)
+        {
+            var attachment = _eventService.GetAttachment(id);
+            if (attachment == null) return NotFound();
+
+            var evnt = _eventService.GetEvent(attachment.EventId);
+            var authResult = await _authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            evnt.EventAttachments.RemoveAll(a => a.Id == id);
+            _eventService.SaveChanges();
+            _logger.LogInformation("{user} removed file {file} from event {event}",
+                User.Identity.Name, attachment.FileId, evnt.Id);
+
+            if (!_eventService.IsAttachedToEvent(attachment.FileId))
+            {
+                _fileService.DeleteFile(attachment.FileId);
+                _logger.LogInformation("{user} deleted file {file}", User.Identity.Name, attachment.FileId);
+            }
+
+            return RedirectToAction("Attachments", new { id = evnt.Id });
         }
 
         [HttpGet]

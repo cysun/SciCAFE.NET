@@ -37,6 +37,16 @@ namespace SciCAFE.NET.Services
             _settings = settings.Value;
         }
 
+        public bool IsAttachmentType(string fileName)
+        {
+            return _settings.AttachmentTypes.Contains(Path.GetExtension(fileName).ToLower());
+        }
+
+        public bool IsTextType(string fileName)
+        {
+            return _settings.TextTypes.Contains(Path.GetExtension(fileName).ToLower());
+        }
+
         public Models.File GetFile(int id)
         {
             return _db.Files.Find(id);
