@@ -14,6 +14,9 @@ namespace SciCAFE.NET.Security
         {
             var claims = new List<Claim>();
 
+            claims.Add(new Claim(ClaimTypes.GivenName, user.FirstName));
+            claims.Add(new Claim(ClaimTypes.Surname, user.LastName));
+
             if (user.IsAdministrator)
                 claims.Add(new Claim(ClaimType.IsAdministrator, "true"));
             if (user.IsEventOrganizer)

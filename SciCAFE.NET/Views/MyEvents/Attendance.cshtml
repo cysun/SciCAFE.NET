@@ -13,7 +13,7 @@
 </nav>
 
 <div class="row mb-3">
-    <div class="col-md-6">
+    <div class="col-9 col-md-6">
         <div class="input-group">
             <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-user-plus"></i></div>
@@ -22,25 +22,34 @@
                    placeholder="Add Attendee" autocomplete="off">
         </div>
     </div>
+    <div class="col-3 col-md-6">
+        <a asp-controller="Email" asp-action="Attendees" asp-route-id="@evnt.Id" class="btn btn-primary" title="Email Attendees">
+            <i class="fas fa-envelope-square"></i>
+        </a>
+    </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr><th>Name</th><th class="d-none d-md-table-cell">Email</th><th></th></tr>
-    </thead>
-    <tbody id="attendances">
-        @foreach (var attendance in Model)
-        {
-            <tr data-attendee-id="@attendance.AttendeeId">
-                <td>@attendance.Attendee.Name</td>
-                <td class="d-none d-md-table-cell">@attendance.Attendee.Email</td>
-                <td>
-                    <button class="removeAttendance btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <thead>
+                <tr><th>Name</th><th></th></tr>
+            </thead>
+            <tbody id="attendances">
+                @foreach (var attendance in Model)
+                {
+                    <tr data-attendee-id="@attendance.AttendeeId">
+                        <td>@attendance.Attendee.Name</td>
+                        <td>
+                            <button class="removeAttendance btn btn-danger btn-sm mr-2"><i class="far fa-trash-alt"></i></button>
+                            <button class="btn btn-primary btn-sm"><i class="fas fa-envelope-square"></i></button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 @section Scripts{
     <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@master/dist/latest/bootstrap-autocomplete.min.js"></script>

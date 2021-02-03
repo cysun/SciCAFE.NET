@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
@@ -152,6 +153,27 @@ namespace SciCAFE.NET.Services
             };
 
             _logger.LogInformation("RewardReviewed message created for reward {reward}", reward.Id);
+
+            return msg;
+        }
+
+        public MimeMessage CreateMessage(ClaimsPrincipal sender, List<Models.User> recipients,
+            string subject, string content)
+        {
+            var msg = new MimeMessage();
+
+            var senderName = $"{sender.FindFirstValue(ClaimTypes.GivenName)} {sender.FindFirstValue(ClaimTypes.Surname)}";
+            var senderEmail = sender.FindFirstValue(ClaimTypes.Email);
+            msg.From.Add(new MailboxAddress(senderName, senderEmail));
+            msg.To.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
+            foreach (Models.User user in recipients)
+                msg.Bcc.Add(new MailboxAddress(user.Name, user.Email));
+
+            msg.Subject = subject;
+            msg.Body = new TextPart("html")
+            {
+                Text = content
+            };
 
             return msg;
         }

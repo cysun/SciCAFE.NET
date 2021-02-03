@@ -28,5 +28,6 @@ namespace SciCAFE.NET.Security.Constants
         public const string CanDeleteReward = "CanDeleteReward";
         public const string CanReviewReward = "CanReviewReward";
         public const string CanAddQualifyingEvent = "CanAddQualifyingEvent";
+        public const string CanEmail = "CanEmail";
     }
 }

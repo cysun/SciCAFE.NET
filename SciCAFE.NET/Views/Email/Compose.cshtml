@@ -1,0 +1,43 @@
+﻿@model EmailInputModel
+@{
+    ViewData["Title"] = "Email";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Email to @Model.To</li>
+    </ol>
+</nav>
+
+<form method="post">
+    <div class="form-group">
+        <input asp-for="Subject" class="form-control" placeholder="Subject">
+        <span asp-validation-for="Subject" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <textarea asp-for="Content" class="form-control"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="To" />
+    <input type="hidden" asp-for="RedirectUrl" />
+    <a class="btn btn-secondary mr-2" href="@Model.RedirectUrl">Cancel</a>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+
+@section StyleSheets{
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+}
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script>
+        $(function () {
+            $("textarea").summernote({
+                height: 200,
+                toolbar: [
+                    ["style", ["bold", "italic", "underline", "clear"]],
+                    ["para", ["ul", "ol"]]
+                ]
+            });
+        });
+    </script>
+}

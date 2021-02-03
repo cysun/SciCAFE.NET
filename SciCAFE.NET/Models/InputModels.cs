@@ -151,4 +151,17 @@ namespace SciCAFE.NET.Models
         [Required]
         public string Description { get; set; }
     }
+
+    public class EmailInputModel
+    {
+        public string To { get; set; }
+
+        public string RedirectUrl { get; set; }
+
+        [Required]
+        public string Subject { get; set; }
+
+        [Required]
+        public string Content { get; set; }
+    }
 }
