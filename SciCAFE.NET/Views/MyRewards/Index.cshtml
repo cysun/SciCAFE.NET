@@ -58,14 +58,14 @@ else
                         }
                     </td>
                     <td>
-                        @if (reward.SubmitDate == null)
+                        @if ((await authorizationService.AuthorizeAsync(User, reward, Policy.CanEditReward)).Succeeded)
                         {
-                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@reward.Id"
+                            <a class="btn btn-primary btn-sm mr-2" asp-action="Edit" asp-route-id="@reward.Id"
                                title="Edit"><i class="fas fa-edit"></i></a>
                         }
-                        else if (reward.Review?.IsApproved == true)
+                        @if (reward.Review?.IsApproved == true)
                         {
-                            <a class="btn btn-secondary btn-sm" asp-action="AddEvents" asp-route-id="@reward.Id"
+                            <a class="btn btn-primary btn-sm" asp-action="AddEvents" asp-route-id="@reward.Id"
                                title="Add Events"><i class="far fa-calendar-check"></i></a>
                         }
                     </td>

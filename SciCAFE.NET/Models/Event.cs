@@ -77,6 +77,41 @@ namespace SciCAFE.NET.Models
         public List<Attendance> Attendances { get; set; } = new List<Attendance>();
 
         public bool IsDeleted { get; set; }
+
+        public Event Clone()
+        {
+            var newEvent = new Event
+            {
+                Name = $"Copy of {Name}",
+                Location = Location,
+                Description = Description,
+                StartTime = StartTime,
+                EndTime = EndTime,
+                CategoryId = CategoryId,
+                TargetAudience = TargetAudience,
+                CoreCompetency = CoreCompetency,
+            };
+
+            newEvent.EventPrograms = EventPrograms.Select(p => new EventProgram
+            {
+                Event = newEvent,
+                ProgramId = p.ProgramId
+            }).ToList();
+
+            newEvent.EventThemes = EventThemes.Select(t => new EventTheme
+            {
+                Event = newEvent,
+                ThemeId = t.ThemeId
+            }).ToList();
+
+            newEvent.EventAttachments = EventAttachments.Select(a => new EventAttachment
+            {
+                Event = newEvent,
+                FileId = a.FileId
+            }).ToList();
+
+            return newEvent;
+        }
     }
 
     [Table("EventPrograms")]

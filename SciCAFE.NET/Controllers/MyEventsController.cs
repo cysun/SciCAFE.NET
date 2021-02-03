@@ -100,6 +100,22 @@ namespace SciCAFE.NET.Controllers
             return saveDraft ? RedirectToAction("Index") : RedirectToAction("AdditionalInfo", new { id = evnt.Id });
         }
 
+        public IActionResult Clone(int id)
+        {
+            var evnt = _eventService.GetEvent(id);
+            if (evnt == null) return NotFound();
+
+            var newEvent = evnt.Clone();
+            newEvent.CreatorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _eventService.AddEvent(newEvent);
+            _eventService.SaveChanges();
+
+            _logger.LogInformation("{user} cloned event {event1} from {event2}",
+                User.Identity.Name, newEvent.Id, evnt.Id);
+
+            return RedirectToAction("Edit", new { id = newEvent.Id });
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditAsync(int id)
         {

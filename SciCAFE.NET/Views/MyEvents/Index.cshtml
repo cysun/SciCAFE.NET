@@ -58,14 +58,17 @@ else
                         }
                     </td>
                     <td>
-                        @if (evnt.SubmitDate == null)
+                        <button class="clone btn btn-primary btn-sm mr-2" data-id="@evnt.Id" title="Clone">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        @if ((await authorizationService.AuthorizeAsync(User, evnt, Policy.CanEditEvent)).Succeeded)
                         {
-                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@evnt.Id"
+                            <a class="btn btn-primary btn-sm mr-2" asp-action="Edit" asp-route-id="@evnt.Id"
                                title="Edit"><i class="fas fa-edit"></i></a>
                         }
-                        else if (evnt.Review?.IsApproved == true)
+                        @if (evnt.Review?.IsApproved == true)
                         {
-                            <a class="btn btn-secondary btn-sm" asp-action="Attendance" asp-route-id="@evnt.Id"
+                            <a class="btn btn-primary btn-sm" asp-action="Attendance" asp-route-id="@evnt.Id"
                                title="Attendance"><i class="fas fa-user-friends"></i></a>
                         }
                     </td>
@@ -73,4 +76,17 @@ else
             }
         </tbody>
     </table>
+}
+
+@section Scripts{
+    <script>
+    $(function () {
+        $(".clone").click(function () {
+            if (confirm("Do you want to clone this event?")) {
+                var id = $(this).attr("data-id");
+                window.location.href = `@Context.Request.PathBase/MyEvents/Clone/${id}`;
+            }
+        });
+    });
+    </script>
 }
