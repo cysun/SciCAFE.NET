@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -109,6 +110,13 @@ namespace SciCAFE.NET
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            // The default locale on Ubuntu Server is C.UTF-8. Changing it to en_US.UTF-8 presumably
+            // will have the same effect, but setting it in application has the advantage of consistence
+            // across different servers.
+            var cultureInfo = new CultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             app.UseSerilogRequestLogging();
 

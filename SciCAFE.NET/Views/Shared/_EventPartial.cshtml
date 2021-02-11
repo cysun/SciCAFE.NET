@@ -17,13 +17,23 @@
             </div>
         </div>
     }
-    <div class="form-group col-md-6">
+    <div class="form-group col-6 col-lg-4">
         <label>Time</label>
         <span class="form-control">
-            @Model.StartTime.ToString("g") - @Model.EndTime.ToString("g")
+            @Model.StartTime.ToString("g")
         </span>
     </div>
-    <div class="form-group col-md-6">
+    <div class="form-group col-6 col-lg-2">
+        <label>Length</label>
+        <span class="form-control">
+            @Model.LengthHours HR
+            @if(Model.LengthMinutes > 0)
+            {
+                @Model.LengthMinutes <text>MIN</text>
+            }
+        </span>
+    </div>
+    <div class="form-group col-lg-6">
         <label>Location</label>
         <span class="form-control">@Model.Location</span>
     </div>

@@ -143,7 +143,8 @@ CREATE TABLE "Events" (
     "Location" character varying(255) NULL,
     "Description" text NOT NULL,
     "StartTime" timestamp without time zone NOT NULL,
-    "EndTime" timestamp without time zone NOT NULL,
+    "LengthHours" integer NOT NULL,
+    "LengthMinutes" integer NOT NULL,
     "CategoryId" integer NULL,
     "TargetAudience" character varying(255) NULL,
     "CoreCompetency" character varying(255) NULL,
@@ -257,7 +258,7 @@ CREATE INDEX "IX_Rewards_Review_ReviewerId" ON "Rewards" ("Review_ReviewerId");
 CREATE UNIQUE INDEX "IX_Themes_Name" ON "Themes" ("Name");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20210203162309_InitialSchema', '5.0.2');
+VALUES ('20210211201034_InitialSchema', '5.0.2');
 
 COMMIT;
 

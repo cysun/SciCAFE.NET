@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace SciCAFE.NET.Models
 {
@@ -20,8 +21,8 @@ namespace SciCAFE.NET.Models
         public string Name { get; set; }
         public DateTime StartTime { get; set; }
         public string StartTimeString => StartTime.ToString("g");
-        public DateTime EndTime { get; set; }
-        public string EndTimeString => EndTime.ToString("g");
+        public int LengthHours { get; set; }
+        public int LengthMintues { get; set; }
     }
 
     public class UserViewModel

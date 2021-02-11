@@ -27,7 +27,7 @@ namespace SciCAFE.NET.Services
         public List<Event> GetEvents(DateTime startTime, DateTime endTime)
         {
             return _db.Events.Where(e =>
-                startTime <= e.StartTime && e.EndTime < endTime && e.Review.IsApproved == true)
+                startTime <= e.StartTime && e.StartTime < endTime && e.Review.IsApproved == true)
                 .OrderBy(e => e.StartTime)
                 .ToList();
         }

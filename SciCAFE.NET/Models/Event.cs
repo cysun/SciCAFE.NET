@@ -50,7 +50,9 @@ namespace SciCAFE.NET.Models
         public string Description { get; set; }
 
         public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+
+        public int LengthHours { get; set; }
+        public int LengthMinutes { get; set; }
 
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
@@ -86,7 +88,8 @@ namespace SciCAFE.NET.Models
                 Location = Location,
                 Description = Description,
                 StartTime = StartTime,
-                EndTime = EndTime,
+                LengthHours = LengthHours,
+                LengthMinutes = LengthMinutes,
                 CategoryId = CategoryId,
                 TargetAudience = TargetAudience,
                 CoreCompetency = CoreCompetency,

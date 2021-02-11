@@ -123,9 +123,8 @@ namespace SciCAFE.NET.Models
         [DataType(DataType.DateTime)]
         public DateTime StartTime { get; set; } = DateTime.Today;
 
-        [Display(Name = "End Time")]
-        [DataType(DataType.DateTime)]
-        public DateTime EndTime { get; set; } = DateTime.Today;
+        public int LengthHours { get; set; } = 1;
+        public int LengthMinutes { get; set; }
 
         [Display(Name = "Please choose the category that best describes the event")]
         public int? CategoryId { get; set; }
