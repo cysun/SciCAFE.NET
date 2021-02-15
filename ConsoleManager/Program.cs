@@ -48,6 +48,9 @@ namespace ConsoleManager
                     case "a":
                         await AddUserAsync();
                         break;
+                    case "t":
+                        await AddTestUsersAsync();
+                        break;
                     case "x":
                         done = true;
                         break;
@@ -59,13 +62,14 @@ namespace ConsoleManager
 
         private string MainView()
         {
-            var validChoices = new HashSet<string>() { "a", "x" };
+            var validChoices = new HashSet<string>() { "a", "t", "x" };
             string choice;
             do
             {
                 Console.Clear();
                 Console.WriteLine("\t Main Menu \n");
                 Console.WriteLine("\t a) Add A User");
+                Console.WriteLine("\t t) Add Test Users");
                 Console.WriteLine("\t x) Exit");
                 Console.Write("\n  Pleasse enter your choice: ");
                 choice = Console.ReadLine().ToLower();
@@ -103,6 +107,62 @@ namespace ConsoleManager
             if (cmd == "s")
             {
                 var result = await userManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    var claims = SecurityUtils.GetAdditionalClaims(user);
+                    if (claims.Count > 0)
+                        await userManager.AddClaimsAsync(user, claims);
+
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await userManager.ConfirmEmailAsync(user, token);
+                }
+                else
+                {
+                    Console.WriteLine("\n\t Failed to create the user");
+                    foreach (var error in result.Errors)
+                        Console.WriteLine($"\t {error.Description}");
+                    Console.Write("\n\n\t Press [Enter] key to continue");
+                    Console.ReadLine();
+                }
+            }
+        }
+
+        private async Task AddTestUsersAsync()
+        {
+            var users = new List<User>{
+                new User
+                {
+                    FirstName = "Chengyu",
+                    LastName = "Sun",
+                    Email = "cysun@localhost.localdomain",
+                    UserName = "cysun@localhost.localdomain",
+                    IsAdministrator = true
+                },
+                new User
+                {
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Email = "jdoe1@localhost.localdomain",
+                    UserName = "jdoe1@localhost.localdomain"
+                },
+                new User
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "jdoe2@localhost.localdomain",
+                    UserName = "jdoe2@localhost.localdomain"
+                },
+                new User
+                {
+                    FirstName = "Tom",
+                    LastName = "Smith",
+                    Email = "tsmith@localhost.localdomain",
+                    UserName = "tsmith@localhost.localdomain"
+                }
+            };
+            foreach (var user in users)
+            {
+                var result = await userManager.CreateAsync(user, "Abcd1234!");
                 if (result.Succeeded)
                 {
                     var claims = SecurityUtils.GetAdditionalClaims(user);
