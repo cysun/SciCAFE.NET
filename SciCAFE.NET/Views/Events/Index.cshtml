@@ -45,6 +45,19 @@
                                     <td>${e.startTimeString}</td>
                                     <td><a href="Events/View/${e.id}">${e.name}</a></td>
                                 </tr>`));
+                            var events = calendar.getEvents();
+                            events.forEach(e => e.remove());
+                            data.forEach(e => {
+                                calendar.addEvent(
+                                    {
+                                        id: e.id,
+                                        title: e.name,
+                                        start: e.startTime,
+                                        url: `@Context.Request.PathBase/Events/View/${e.id}`,
+                                        display: "block"
+                                    }
+                                );
+                            });
                         }
                     });
                 }
