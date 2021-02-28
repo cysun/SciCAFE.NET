@@ -42,7 +42,6 @@
                         <td>@attendance.Attendee.Name</td>
                         <td>
                             <button class="removeAttendance btn btn-danger btn-sm mr-2"><i class="far fa-trash-alt"></i></button>
-                            <button class="btn btn-primary btn-sm"><i class="fas fa-envelope-square"></i></button>
                         </td>
                     </tr>
                 }
@@ -91,7 +90,6 @@
                         $("#total").text(++total);
                         var row = $(`<tr data-attendee-id='${item.id}'>
                                        <td>${item.firstName} ${item.lastName}</td>
-                                       <td class="d-none d-md-table-cell">${item.email}</td>
                                    </tr>`);
                         var btn = $("<button class='btn btn-danger btn-sm'><i class='far fa-trash-alt'></i></button>");
                         btn.click(function () {

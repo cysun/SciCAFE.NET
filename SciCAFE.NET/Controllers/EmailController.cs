@@ -68,5 +68,50 @@ namespace SciCAFE.NET.Controllers
 
             return Redirect(input.RedirectUrl);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> RewardeesAsync(int id)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanEmail);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            return View("Compose", new EmailInputModel
+            {
+                To = $"Rewardees of {reward.Name}",
+                RedirectUrl = $"{Request.PathBase}/MyRewards/Rewardees/{id}"
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RewardeesAsync(int id, EmailInputModel input)
+        {
+            if (!ModelState.IsValid) return View("Compose", input);
+
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanEmail);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            var recipients = _rewardService.GetRewardees(id).Where(r => r.RequirementsMet)
+                .Select(r => new User
+                {
+                    Id = r.Id,
+                    FirstName = r.FirstName,
+                    LastName = r.LastName,
+                    Email = r.Email
+                }).ToList();
+            var msg = _emailSender.CreateMessage(User, recipients, input.Subject, input.Content);
+            if (msg != null) _ = _emailSender.SendAsync(msg);
+
+            _logger.LogInformation("{user} emailed to the rewardees of reward {reward}", User.Identity.Name, id);
+
+            return Redirect(input.RedirectUrl);
+        }
     }
 }

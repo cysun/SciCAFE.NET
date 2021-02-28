@@ -74,6 +74,43 @@ namespace SciCAFE.NET.Services
             return _db.RewardAttachments.Where(a => a.FileId == fileId).Count() > 0;
         }
 
+        public List<RewardeeViewModel> GetRewardees(int id)
+        {
+            var reward = _db.Rewards.Where(r => r.Id == id)
+                            .Include(r => r.RewardEvents)
+                            .SingleOrDefault();
+            var eventIds = reward.RewardEvents.Select(e => e.EventId).ToHashSet();
+            var attendances = _db.Attendances.Where(a => eventIds.Contains(a.EventId))
+                .Include(a => a.Attendee)
+                .OrderBy(a => a.AttendeeId)
+                .ToList();
+
+            var rewardees = new List<RewardeeViewModel>();
+            var rewardee = new RewardeeViewModel();
+            foreach (var attendance in attendances)
+            {
+                if (attendance.AttendeeId != rewardee.Id)
+                {
+                    rewardee = new RewardeeViewModel
+                    {
+                        Id = attendance.Attendee.Id,
+                        FirstName = attendance.Attendee.FirstName,
+                        LastName = attendance.Attendee.LastName,
+                        Email = attendance.Attendee.Email,
+                        NumOfEventsToQualify = reward.NumOfEventsToQualify
+                    };
+                    rewardee.AttendedEventIds.Add(attendance.EventId);
+                    rewardees.Add(rewardee);
+                }
+                else
+                {
+                    rewardee.AttendedEventIds.Add(attendance.EventId);
+                }
+            }
+
+            return rewardees;
+        }
+
         public void SaveChanges() => _db.SaveChanges();
     }
 }

@@ -1,4 +1,5 @@
-﻿@model Reward
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
+@model Reward
 @{
     ViewData["Title"] = "View Reward";
 }
@@ -7,13 +8,17 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
         <li class="breadcrumb-item active">@Model.Name</li>
-        @if (Model.Review?.IsApproved == true)
-        {
-            <li class="ml-auto">
+        <li class="ml-auto">
+            <div class="btn-group" role="group">
                 <a asp-action="AddEvents" asp-route-id="@Model.Id" class="btn btn-outline-dark btn-sm"
                    title="Add Events"><i class="far fa-calendar-check"></i></a>
-            </li>
-        }
+                @if ((await authorizationService.AuthorizeAsync(User, Model, Policy.CanViewRewardees)).Succeeded)
+                {
+                    <a asp-action="Attendance" asp-route-id="@Model.Id" class="btn btn-outline-dark btn-sm ml-2"
+                       title="Attendance"><i class="fas fa-user-friends"></i></a>
+                }
+            </div>
+        </li>
     </ol>
 </nav>
 

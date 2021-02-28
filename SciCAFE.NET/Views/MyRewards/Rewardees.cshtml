@@ -1,0 +1,72 @@
+﻿@model List<RewardeeViewModel>
+@{
+    ViewData["Title"] = "Rewardees";
+    var reward = (Reward)ViewBag.Reward;
+    var rewardeeCount = Model.Where(r => r.RequirementsMet).Count();
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Rewards</a></li>
+        <li class="breadcrumb-item"><a asp-action="View" asp-route-id="@reward.Id">@reward.Name</a></li>
+        <li class="breadcrumb-item active">Rewardees (<span id="total">@rewardeeCount</span>)</li>
+    </ol>
+</nav>
+
+<p class="text-right">
+    <a asp-controller="Email" asp-action="Rewardees" asp-route-id="@reward.Id" class="btn btn-primary" title="Email Rewardees">
+        <i class="fas fa-envelope-square"></i>
+    </a>
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    @for (int i = 0; i < reward.RewardEvents.Count; ++i)
+                    {
+                        <th data-toggle="popover" data-content="@reward.RewardEvents[i].Event.Name">Event @(i+1)</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rewardee in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (rewardee.RequirementsMet)
+                            {
+                                <i class="fas fa-ribbon text-success"></i>
+                            }
+                            @rewardee.Name
+                        </td>
+                        @for (int i = 0; i < reward.RewardEvents.Count; ++i)
+                        {
+                            if (rewardee.AttendedEventIds.Contains(reward.RewardEvents[i].EventId))
+                            {
+                                <td><i class="fas fa-check-square fa-lg text-success"></i></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $("[data-toggle='popover']").popover({
+                placement: "top",
+                trigger: "hover"
+            });
+        });
+    </script>
+}

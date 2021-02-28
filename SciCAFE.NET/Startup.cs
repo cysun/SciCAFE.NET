@@ -72,6 +72,8 @@ namespace SciCAFE.NET
                     policyBuilder.AddRequirements(new CanReviewRewardRequirement()));
                 options.AddPolicy(Policy.CanAddQualifyingEvent, policyBuilder =>
                     policyBuilder.AddRequirements(new CanAddQualifyingEventRequirement()));
+                options.AddPolicy(Policy.CanViewRewardees, policyBuilder =>
+                    policyBuilder.AddRequirements(new CanViewRewardeesRequirement()));
                 options.AddPolicy(Policy.CanEmail, policyBuilder =>
                     policyBuilder.AddRequirements(new CanEmailRequirement()));
             });
@@ -83,6 +85,7 @@ namespace SciCAFE.NET
             services.AddScoped<IAuthorizationHandler, CanDeleteRewardHandler>();
             services.AddScoped<IAuthorizationHandler, CanReviewRewardHandler>();
             services.AddScoped<IAuthorizationHandler, CanAddQualifyingEventHandler>();
+            services.AddScoped<IAuthorizationHandler, CanViewRewardeesHandler>();
             services.AddScoped<IAuthorizationHandler, CanEmailAttendeesHandler>();
             services.AddScoped<IAuthorizationHandler, CanEmailRewardeesHandler>();
 

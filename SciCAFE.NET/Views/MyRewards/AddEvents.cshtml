@@ -12,6 +12,14 @@
 </nav>
 
 <form method="post">
+    @if (Model.Review?.IsApproved == true && !User.HasClaim(ClaimType.IsAdministrator, "true") && !User.HasClaim(ClaimType.IsRewardReviewer, "true"))
+    {
+        <p class="text-warning">
+            This reward is already published. If you add more qualifying events, it will cause the reward
+            to be "un-published" and need to be reviewed again. This is to prevent people from accessing
+            attendance information of the events that they are not approved for.
+        </p>
+    }
     <div class="row">
         <div class="form-group col-md-8">
             <label>Add Event</label>

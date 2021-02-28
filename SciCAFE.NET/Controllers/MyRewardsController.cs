@@ -297,6 +297,12 @@ namespace SciCAFE.NET.Controllers
                     RewardId = id,
                     EventId = eventId
                 }));
+
+                if (reward.Review?.IsApproved == true
+                    && !User.HasClaim(ClaimType.IsAdministrator, "true")
+                    && !User.HasClaim(ClaimType.IsRewardReviewer, "true"))
+                    reward.Review = null;
+
                 _rewardService.SaveChanges();
                 _logger.LogInformation("{user} added {events} to reward {reward}", User.Identity.Name, newEventIds, id);
             }
@@ -369,6 +375,19 @@ namespace SciCAFE.NET.Controllers
                 User.Identity.Name, eventId, rewardId);
 
             return Ok();
+        }
+
+        public async Task<IActionResult> RewardeesAsync(int id)
+        {
+            var reward = _rewardService.GetReward(id);
+            if (reward == null) return NotFound();
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, reward, Policy.CanViewRewardees);
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            ViewBag.Reward = reward;
+            return View(_rewardService.GetRewardees(id));
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace SciCAFE.NET.Models
@@ -31,5 +33,21 @@ namespace SciCAFE.NET.Models
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+    }
+
+    public class RewardeeViewModel
+    {
+        public string Id { get; set; }
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        public HashSet<int> AttendedEventIds { get; set; } = new HashSet<int>();
+
+        public int NumOfEventsToQualify { get; set; }
+
+        public bool RequirementsMet => AttendedEventIds.Count >= NumOfEventsToQualify;
+
+        public string Name => $"{FirstName} {LastName}";
     }
 }

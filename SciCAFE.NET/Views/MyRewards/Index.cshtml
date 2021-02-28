@@ -66,10 +66,12 @@ else
                             <a class="btn btn-primary btn-sm mr-2" asp-action="Edit" asp-route-id="@reward.Id"
                                title="Edit"><i class="fas fa-edit"></i></a>
                         }
-                        @if (reward.Review?.IsApproved == true)
+                        <a class="btn btn-primary btn-sm mr-2" asp-action="AddEvents" asp-route-id="@reward.Id"
+                           title="Add Events"><i class="far fa-calendar-check"></i></a>
+                        @if ((await authorizationService.AuthorizeAsync(User, reward, Policy.CanViewRewardees)).Succeeded)
                         {
-                            <a class="btn btn-primary btn-sm" asp-action="AddEvents" asp-route-id="@reward.Id"
-                               title="Add Events"><i class="far fa-calendar-check"></i></a>
+                            <a class="btn btn-primary btn-sm" asp-action="Rewardees" asp-route-id="@reward.Id"
+                               title="Rewardess"><i class="fas fa-user-friends"></i></a>
                         }
                     </td>
                 </tr>

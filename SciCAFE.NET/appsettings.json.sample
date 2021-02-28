@@ -13,7 +13,7 @@
     "RequireAuthentication": true,
     "Username": "cysun@localhost.localdomain",
     "Password": "abcd",
-    "SenderName": "SciCAFE Admin",
+    "SenderName": "SciCAFE",
     "SenderEmail": "scicafe@localhost.localdomain"
   },
   "File": {
