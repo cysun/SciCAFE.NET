@@ -18,7 +18,7 @@
     @foreach (var program in Model)
     {
         <div class="col-md-6 mb-4">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header">
                     @program.ShortName
                     @if ((await authorizationService.AuthorizeAsync(User, ClaimType.IsAdministrator)).Succeeded)

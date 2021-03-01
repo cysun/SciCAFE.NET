@@ -111,6 +111,11 @@ namespace SciCAFE.NET.Services
             return rewardees;
         }
 
+        public int GetRewardsProvidedCount(string userId)
+        {
+            return _db.Rewards.Where(r => r.CreatorId == userId).Count();
+        }
+
         public void SaveChanges() => _db.SaveChanges();
     }
 }

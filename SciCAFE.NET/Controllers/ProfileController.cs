@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SciCAFE.NET.Models;
+using SciCAFE.NET.Services;
 
 namespace SciCAFE.NET.Controllers
 {
@@ -17,16 +18,31 @@ namespace SciCAFE.NET.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
+        private readonly EventService _eventService;
+        private readonly RewardService _rewardService;
+
         private readonly IMapper _mapper;
         private readonly ILogger<ProfileController> _logger;
 
         public ProfileController(UserManager<User> userManager, SignInManager<User> signInManager,
-            IMapper mapper, ILogger<ProfileController> logger)
+            EventService eventService, RewardService rewardService, IMapper mapper, ILogger<ProfileController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _eventService = eventService;
+            _rewardService = rewardService;
             _mapper = mapper;
             _logger = logger;
+        }
+
+        public async Task<IActionResult> IndexAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            ViewBag.User = user;
+            ViewBag.EventsOrganizedCount = _eventService.GetEventsOrganizedCount(user.Id);
+            ViewBag.EventsAttendedCount = _eventService.GetEventsAttendedCount(user.Id);
+            ViewBag.RewardsProvidedCount = _rewardService.GetRewardsProvidedCount(user.Id);
+            return View();
         }
 
         [HttpGet]
@@ -65,7 +81,7 @@ namespace SciCAFE.NET.Controllers
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("{user} changed password successfully.", user.Email);
 
-            return RedirectToAction("Account", new { success = "true" });
+            return RedirectToAction("Index");
         }
     }
 }

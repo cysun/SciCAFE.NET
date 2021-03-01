@@ -114,6 +114,16 @@ namespace SciCAFE.NET.Services
             return _db.EventAttachments.Where(a => a.FileId == fileId).Count() > 0;
         }
 
+        public int GetEventsOrganizedCount(string userId)
+        {
+            return _db.Events.Where(e => e.CreatorId == userId).Count();
+        }
+
+        public int GetEventsAttendedCount(string userId)
+        {
+            return _db.Attendances.Where(a => a.AttendeeId == userId).Count();
+        }
+
         public void SaveChanges() => _db.SaveChanges();
     }
 }
