@@ -88,14 +88,20 @@ namespace SciCAFE.NET.Models
         public string Website { get; set; }
     }
 
-    public class PasswordInputModel
+    public class ProfileInputModel
     {
-        [Required]
+        [Display(Name ="CIN")]
+        public string Cin { get; set; }
+
+        public string Major { get; set; }
+
+        [Display(Name = "Program Affiliation(s)")]
+        public List<int> ProgramIds { get; set; }
+
         [DataType(DataType.Password)]
         [Display(Name = "Current password")]
         public string OldPassword { get; set; }
 
-        [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "New password")]

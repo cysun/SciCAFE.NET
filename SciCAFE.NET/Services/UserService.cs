@@ -35,7 +35,9 @@ namespace SciCAFE.NET.Services
 
         public User GetUser(string id)
         {
-            return _db.Users.Find(id);
+            return _db.Users.Where(u => u.Id == id)
+                .Include(u => u.UserPrograms).ThenInclude(p => p.Program)
+                .SingleOrDefault();
         }
 
         public List<User> SearchUsersByPrefix(string prefix)

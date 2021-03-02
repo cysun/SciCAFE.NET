@@ -1,7 +1,12 @@
-﻿ALTER TABLE "Events" ADD COLUMN "LengthHours" integer NOT NULL DEFAULT 1;
-ALTER TABLE "Events" ADD COLUMN "LengthMinutes" integer NOT NULL DEFAULT 0;
+﻿ALTER TABLE "AspNetUsers" ADD COLUMN "Cin" character varying(255) NULL;
+ALTER TABLE "AspNetUsers" ADD COLUMN "Major" character varying(255) NULL;
 
-UPDATE "Events" SET "LengthHours" = FLOOR(EXTRACT(EPOCH FROM ("EndTime"-"StartTime"))/60/60);
-UPDATE "Events" SET "LengthMinutes" = CAST(EXTRACT(EPOCH FROM ("EndTime"-"StartTime"))/60 as INTEGER)%60;
+CREATE TABLE "UserPrograms" (
+    "UserId" text NOT NULL,
+    "ProgramId" integer NOT NULL,
+    CONSTRAINT "PK_UserPrograms" PRIMARY KEY ("UserId", "ProgramId"),
+    CONSTRAINT "FK_UserPrograms_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_UserPrograms_Programs_ProgramId" FOREIGN KEY ("ProgramId") REFERENCES "Programs" ("Id") ON DELETE CASCADE
+);
 
-ALTER TABLE "Events" DROP COLUMN "EndTime";
+CREATE INDEX "IX_UserPrograms_ProgramId" ON "UserPrograms" ("ProgramId");

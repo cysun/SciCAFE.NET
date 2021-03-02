@@ -1,4 +1,4 @@
-﻿@model PasswordInputModel
+﻿@model ProfileInputModel
 @{
     ViewData["Title"] = "Profile";
 }
@@ -10,44 +10,69 @@
     </ol>
 </nav>
 
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <form method="post">
-            <div class="form-group">
-                <label>Name</label>
-                <span class="form-control">@ViewBag.User.Name</span>
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <span class="form-control">@ViewBag.User.Email</span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OldPassword"></label>
-                <input asp-for="OldPassword" class="form-control" />
-                <span asp-validation-for="OldPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewPassword"></label>
-                <input asp-for="NewPassword" class="form-control" />
-                <span asp-validation-for="NewPassword" class="text-danger"></span>
-                <small id="passwordHelp" class="form-text text-muted">
-                    Passwords must be at least six characters long, and contain at least one
-                    uppercase character, one lowercase character, a digit, and a non-alphanumeric
-                    character.
-                </small>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword">Confirm Password</label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <a class="btn btn-secondary mr-2" asp-controller="Profile" asp-action="Index">Cancel</a>
-            <button type="submit" class="btn btn-primary">Update</button>
-        </form>
+<form method="post">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Name</label>
+            <span class="form-control">@ViewBag.User.Name</span>
+        </div>
+        <div class="form-group col-md-6">
+            <label>Email</label>
+            <span class="form-control">@ViewBag.User.Email</span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Cin"></label>
+            <input asp-for="Cin" class="form-control">
+            <span asp-validation-for="Cin" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Major"></label>
+            <input asp-for="Major" class="form-control">
+            <span asp-validation-for="Major" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="ProgramIds"></label>
+            <select asp-for="ProgramIds" asp-items="ViewBag.Programs" class="form-control selectpicker border"
+                    title="No program selected"></select>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="OldPassword"></label>
+            <input asp-for="OldPassword" class="form-control" />
+            <span asp-validation-for="OldPassword" class="text-danger"></span>
+            <small id="passwordNote" class="form-text text-muted">
+                If you don't want to change your password, simply leave the password fields empty.
+            </small>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="NewPassword"></label>
+            <input asp-for="NewPassword" class="form-control" />
+            <span asp-validation-for="NewPassword" class="text-danger"></span>
+            <small id="passwordHelp" class="form-text text-muted">
+                Passwords must be at least six characters long, and contain at least one
+                uppercase character, one lowercase character, a digit, and a non-alphanumeric
+                character.
+            </small>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="ConfirmPassword">Confirm Password</label>
+            <input asp-for="ConfirmPassword" class="form-control" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+        <a class="btn btn-secondary mr-2" asp-controller="Profile" asp-action="Index">Cancel</a>
+        <button type="submit" class="btn btn-primary">Update</button>
     </div>
-</div>
+</form>
 
-@section Scripts {
-<partial name="_ValidationScriptsPartial" />
+@section StyleSheets{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+}
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script>
+        $(function () {
+            $("select").selectpicker();
+        });
+    </script>
 }
 

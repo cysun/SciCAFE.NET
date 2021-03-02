@@ -28,6 +28,8 @@ namespace SciCAFE.NET.Services
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<UserProgram>().HasKey(p => new { p.UserId, p.ProgramId });
+
             modelBuilder.Entity<Models.Program>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<Models.Program>().Property(p => p.IsDeleted).HasDefaultValue(false);
 

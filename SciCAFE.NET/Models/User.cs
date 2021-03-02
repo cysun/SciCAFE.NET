@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -25,5 +26,24 @@ namespace SciCAFE.NET.Models
         public bool IsRewardReviewer { get; set; }
 
         public string Name => $"{FirstName} {LastName}";
+
+        [MaxLength(255)]
+        public string Cin { get; set; }
+
+        [MaxLength(255)]
+        public string Major { get; set; }
+
+        public List<UserProgram> UserPrograms { get; set; }
     }
+
+    [Table("UserPrograms")]
+    public class UserProgram
+    {
+        public string UserId { get; set; }
+        public User User { get; set; }
+
+        public int ProgramId { get; set; }
+        public Models.Program Program { get; set; }
+    }
+
 }
