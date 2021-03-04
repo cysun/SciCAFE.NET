@@ -45,7 +45,7 @@ namespace SciCAFE.NET.Controllers
         public IActionResult Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(_eventService.GetEventsByCreator(userId));
+            return View(_eventService.GetEventsCreated(userId));
         }
 
         public IActionResult View(int id)
@@ -353,7 +353,7 @@ namespace SciCAFE.NET.Controllers
                 return Forbid();
 
             ViewBag.Event = evnt;
-            return View(_eventService.GetEventAttendances(id));
+            return View(_eventService.GetAttendancesByEvent(id));
         }
 
         [HttpPost("MyEvents/{eventId}/Themes/{themeId}")]

@@ -11,7 +11,7 @@
         <li class="ml-auto">
             <div class="btn-group" role="group">
                 <a asp-action="AddEvents" asp-route-id="@Model.Id" class="btn btn-outline-dark btn-sm"
-                   title="Add Events"><i class="far fa-calendar-check"></i></a>
+                   title="Add Events"><i class="far fa-calendar-plus"></i></a>
                 @if ((await authorizationService.AuthorizeAsync(User, Model, Policy.CanViewRewardees)).Succeeded)
                 {
                     <a asp-action="Attendance" asp-route-id="@Model.Id" class="btn btn-outline-dark btn-sm ml-2"

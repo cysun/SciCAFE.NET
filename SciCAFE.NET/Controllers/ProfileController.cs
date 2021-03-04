@@ -122,5 +122,30 @@ namespace SciCAFE.NET.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Events()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.EventsAttended = _eventService.GetEventsAttended(userId);
+            ViewBag.EventsCreated = _eventService.GetEventsCreated(userId);
+            return View();
+        }
+
+        public IActionResult Rewards()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.RewardsProvided = _rewardService.GetRewardsProvided(userId);
+            ViewBag.RewardsQualified = _rewardService.GetRewardsQualified(userId);
+            ViewBag.EventsAttended = _eventService.GetAttendancesByUser(userId).Select(a => a.EventId).ToHashSet();
+            return View();
+        }
+
+        [HttpGet("Profile/Rewards/Counts")]
+        public Object RewardCounts()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var counts = _rewardService.GetRewardsQualifiedCounts(userId);
+            return new { QualifiedRewardsCount = counts.Item1, RewardsCount = counts.Item2 };
+        }
     }
 }

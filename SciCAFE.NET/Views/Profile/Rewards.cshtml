@@ -1,0 +1,135 @@
+﻿@{
+    ViewData["Title"] = "Profile - Rewards";
+    var rewardsProvided = (List<Reward>)ViewBag.RewardsProvided;
+    var rewardsQualified = (List<Reward>)ViewBag.RewardsQualified;
+    var eventsAttended = (HashSet<int>)ViewBag.EventsAttended;
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Profile</a></li>
+        <li class="breadcrumb-item active">Rewards</li>
+    </ol>
+</nav>
+
+<div class="card mb-3">
+    <div class="card-header">Rewards Qualified</div>
+    <div class="card-body">
+        @if (rewardsQualified.Count > 0)
+        {
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Event Required</th>
+                        <th>Events Attended</th>
+                        <th>Qualified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reward in rewardsQualified)
+                    {
+                        var numOfEventsAttended = 0;
+                        <tr>
+                            <td>
+                                <a asp-controller="Rewards" asp-action="View" asp-route-id="@reward.Id">@reward.Name</a>
+                            </td>
+                            <td>@reward.NumOfEventsToQualify</td>
+                            <td>
+                                @foreach (var evnt in reward.RewardEvents)
+                                {
+                                    if (eventsAttended.Contains(evnt.EventId))
+                                    {
+                                        numOfEventsAttended++;
+                                        <a asp-controller="Events" asp-action="View" asp-route-id="@evnt.EventId"
+                                           class="text-decoration-none">
+                                            <i class="fas fa-calendar-check fa-lg text-success mr-2"
+                                               data-toggle="popover" data-content="@evnt.Event.Name"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Events" asp-action="View" asp-route-id="@evnt.EventId"
+                                           class="text-decoration-none">
+                                            <i class="fas fa-calendar-alt fa-lg text-secondary mr-2"
+                                               data-toggle="popover" data-content="@evnt.Event.Name"></i>
+                                        </a>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (numOfEventsAttended >= reward.NumOfEventsToQualify)
+                                {
+                                    <span class="text-success">Yes</span>
+                                }
+                                else
+                                {
+                                    <span class="text-warning">No</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Rewards Provided</div>
+    <div class="card-body">
+        @if (rewardsProvided.Count > 0)
+        {
+            <table class="table table-hover table-borderless">
+                <thead>
+                    <tr class="border-bottom">
+                        <th>Name</th>
+                        <th>Expiration Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reward in rewardsProvided)
+                    {
+                        <tr class="border-bottom">
+                            <td><a asp-controller="MyRewards" asp-action="View" asp-route-id="@reward.Id">@reward.Name</a></td>
+                            <td>@reward.ExpireDate?.ToString("d")</td>
+                            <td>
+                                @if (reward.SubmitDate != null)
+                                {
+                                    @if (reward.Review?.IsApproved == null)
+                                    {
+                                        <span class="text-info">Submitted on @reward.SubmitDate?.ToString("d")</span>
+                                    }
+                                    else if (reward.Review?.IsApproved == true)
+                                    {
+                                        <span class="text-success">Published on @reward.Review.Timestamp.ToString("d")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">Denied on @reward.Review.Timestamp.ToString("d")</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-info">Draft</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $("[data-toggle='popover']").popover({
+                placement: "auto",
+                trigger: "hover"
+            });
+        });
+    </script>
+}

@@ -60,7 +60,7 @@ namespace SciCAFE.NET.Controllers
             if (!authResult.Succeeded)
                 return Forbid();
 
-            var recipients = _eventService.GetEventAttendances(id).Select(a => a.Attendee).ToList();
+            var recipients = _eventService.GetAttendancesByEvent(id).Select(a => a.Attendee).ToList();
             var msg = _emailSender.CreateMessage(User, recipients, input.Subject, input.Content);
             if (msg != null) _ = _emailSender.SendAsync(msg);
 

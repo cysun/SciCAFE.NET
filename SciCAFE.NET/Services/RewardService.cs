@@ -49,11 +49,6 @@ namespace SciCAFE.NET.Services
                 .ToList();
         }
 
-        public List<Reward> GetRewardsByCreator(string creatorId)
-        {
-            return _db.Rewards.Where(e => e.CreatorId == creatorId).OrderByDescending(r => r.Id).ToList();
-        }
-
         public void AddReward(Reward reward) => _db.Rewards.Add(reward);
 
         public void DeleteReward(Reward reward) => _db.Rewards.Remove(reward);
@@ -114,6 +109,41 @@ namespace SciCAFE.NET.Services
         public int GetRewardsProvidedCount(string userId)
         {
             return _db.Rewards.Where(r => r.CreatorId == userId).Count();
+        }
+
+        public (int, int) GetRewardsQualifiedCounts(string userId)
+        {
+            var rewardsCount = _db.Rewards.FromSqlInterpolated($@"
+                SELECT r.* from ""Rewards"" r
+                    INNER JOIN ""RewardEvents"" e on r.""Id"" = e.""RewardId""
+                    INNER JOIN ""Attendances"" a on e.""EventId"" = a.""EventId""
+                    WHERE a.""AttendeeId"" = {userId}").Distinct().Count();
+
+            var qualifiedRewardsCount = _db.Rewards.FromSqlInterpolated($@"
+                SELECT r.* from ""Rewards"" r
+                    INNER JOIN ""RewardEvents"" e on r.""Id"" = e.""RewardId""
+                    INNER JOIN ""Attendances"" a on e.""EventId"" = a.""EventId""
+                    WHERE a.""AttendeeId"" = {userId}
+                    GROUP BY r.""Id""
+                    HAVING COUNT(e.""EventId"") >= r.""NumOfEventsToQualify""").Count();
+
+            return (qualifiedRewardsCount, rewardsCount);
+        }
+
+        public List<Reward> GetRewardsProvided(string userId)
+        {
+            return _db.Rewards.Where(e => e.CreatorId == userId).OrderByDescending(r => r.Id).ToList();
+        }
+
+        public List<Reward> GetRewardsQualified(string userId)
+        {
+            return _db.Rewards.FromSqlInterpolated($@"
+                SELECT r.* from ""Rewards"" r
+                    INNER JOIN ""RewardEvents"" e on r.""Id"" = e.""RewardId""
+                    INNER JOIN ""Attendances"" a on e.""EventId"" = a.""EventId""
+                    WHERE a.""AttendeeId"" = {userId}")
+                .Include(r => r.RewardEvents).ThenInclude(e => e.Event)
+                .ToList();
         }
 
         public void SaveChanges() => _db.SaveChanges();

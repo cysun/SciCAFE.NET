@@ -40,9 +40,17 @@ namespace SciCAFE.NET.Services
                 .ToList();
         }
 
-        public List<Event> GetEventsByCreator(string creatorId)
+        public List<Event> GetEventsCreated(string userId)
         {
-            return _db.Events.Where(e => e.CreatorId == creatorId).OrderByDescending(e => e.StartTime).ToList();
+            return _db.Events.Where(e => e.CreatorId == userId).OrderByDescending(e => e.StartTime).ToList();
+        }
+
+        public List<Event> GetEventsAttended(string userId)
+        {
+            return _db.Attendances.Where(a => a.AttendeeId == userId)
+                .Include(a => a.Event)
+                .OrderByDescending(a => a.EventId)
+                .Select(a => a.Event).ToList();
         }
 
         public List<Event> SearchEvents(string term)
@@ -65,12 +73,17 @@ namespace SciCAFE.NET.Services
 
         public void DeleteEvent(Event evnt) => _db.Events.Remove(evnt);
 
-        public List<Attendance> GetEventAttendances(int eventId)
+        public List<Attendance> GetAttendancesByEvent(int eventId)
         {
             return _db.Attendances.Where(a => a.EventId == eventId)
                 .Include(a => a.Attendee)
                 .OrderBy(a => a.Attendee.FirstName).ThenBy(a => a.Attendee.LastName)
                 .ToList();
+        }
+
+        public List<Attendance> GetAttendancesByUser(string userId)
+        {
+            return _db.Attendances.Where(a => a.AttendeeId == userId).ToList();
         }
 
         public Attendance GetAttendance(int eventId, string attendeeId)

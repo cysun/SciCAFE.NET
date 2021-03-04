@@ -40,7 +40,7 @@ namespace SciCAFE.NET.Controllers
         public IActionResult Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(_rewardService.GetRewardsByCreator(userId));
+            return View(_rewardService.GetRewardsProvided(userId));
         }
 
         public IActionResult View(int id)

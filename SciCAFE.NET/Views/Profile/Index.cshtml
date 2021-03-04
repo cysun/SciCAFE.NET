@@ -63,14 +63,14 @@
         <div class="card">
             <div class="card-header">
                 Rewards
-                <a class="btn btn-sm btn-secondary float-right" asp-action="Events"><i class="fas fa-eye"></i></a>
+                <a class="btn btn-sm btn-secondary float-right" asp-action="Rewards"><i class="fas fa-eye"></i></a>
             </div>
             <div class="card-body">
                 <table class="table table-borderless">
                     <tbody>
                         <tr class="border-bottom">
-                            <td>Earned</td>
-                            <td>
+                            <td>Qualified</td>
+                            <td id="rewardCounts">
                                 <div class="spinner-border spinner-border-sm" role="status">
                                     <span class="sr-only">Loading...</span>
                                 </div>
@@ -83,3 +83,16 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+    $(function () {
+        $.ajax({
+            url: `@Context.Request.PathBase/Profile/Rewards/Counts`,
+            success: function (data) {
+                $("#rewardCounts").text(`${data.qualifiedRewardsCount} / ${data.rewardsCount}`);
+            }
+        });
+    });
+    </script>
+}

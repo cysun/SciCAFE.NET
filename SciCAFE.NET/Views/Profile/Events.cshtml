@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Profile - Events";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Profile</a></li>
+        <li class="breadcrumb-item active">Events</li>
+    </ol>
+</nav>
+
+<div class="card mb-3">
+    <div class="card-header">Events Attended</div>
+    <div class="card-body">
+        @if (ViewBag.EventsAttended.Count > 0)
+        {
+        <table class="table table-hover table-borderless">
+            <thead>
+                <tr class="border-bottom">
+                    <th>Name</th>
+                    <th>Event Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var evnt in ViewBag.EventsAttended)
+                {
+                    <tr class="border-bottom">
+                        <td><a asp-controller="Events" asp-action="View" asp-route-id="@evnt.Id">@evnt.Name</a></td>
+                        <td>@evnt.StartTime.ToString("d")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+                }
+        </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Events Created</div>
+    <div class="card-body">
+        @if (ViewBag.EventsCreated.Count > 0)
+        {
+            <table class="table table-hover table-borderless">
+                <thead>
+                    <tr class="border-bottom">
+                        <th>Name</th>
+                        <th class="d-none d-md-table-cell">Event Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var evnt in ViewBag.EventsCreated)
+                    {
+                        <tr class="border-bottom">
+                            <td><a asp-controller="MyEvents" asp-action="View" asp-route-id="@evnt.Id">@evnt.Name</a></td>
+                            <td class="d-none d-md-table-cell">@evnt.StartTime.ToString("d")</td>
+                            <td>
+                                @if (evnt.SubmitDate != null)
+                                {
+                                    @if (evnt.Review?.IsApproved == null)
+                                    {
+                                        <span class="text-info">Submitted on @evnt.SubmitDate?.ToString("d")</span>
+                                    }
+                                    else if (evnt.Review?.IsApproved == true)
+                                    {
+                                        <span class="text-success">Published on @evnt.Review.Timestamp.ToString("d")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">Denied on @evnt.Review.Timestamp.ToString("d")</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-info">Draft</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

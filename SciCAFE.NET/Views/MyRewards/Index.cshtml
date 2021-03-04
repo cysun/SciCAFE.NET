@@ -67,7 +67,7 @@ else
                                title="Edit"><i class="fas fa-edit"></i></a>
                         }
                         <a class="btn btn-primary btn-sm mr-2" asp-action="AddEvents" asp-route-id="@reward.Id"
-                           title="Add Events"><i class="far fa-calendar-check"></i></a>
+                           title="Add Events"><i class="far fa-calendar-plus"></i></a>
                         @if ((await authorizationService.AuthorizeAsync(User, reward, Policy.CanViewRewardees)).Succeeded)
                         {
                             <a class="btn btn-primary btn-sm" asp-action="Rewardees" asp-route-id="@reward.Id"
