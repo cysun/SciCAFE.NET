@@ -18,7 +18,7 @@
         {
             <tr>
                 <td>
-                    <span class="mr-2">@user.Name</span>
+                    <a asp-action="View" asp-route-id="@user.Id" class="mr-2">@user.Name</a>
                     @if (user.IsAdministrator)
                     {
                         <span class="badge badge-success">Administrator</span>

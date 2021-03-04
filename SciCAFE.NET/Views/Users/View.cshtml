@@ -1,0 +1,39 @@
+﻿@model User
+@{
+    ViewData["Title"] = "User Info";
+}
+
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
+        <li class="breadcrumb-item active">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="form-group col-md-6">
+        <label>Name</label>
+        <span class="form-control">@Model.Name</span>
+    </div>
+    <div class="form-group col-md-6">
+        <label>Email</label>
+        <span class="form-control">@Model.Email</span>
+    </div>
+    <div class="form-group col-md-6">
+        <label>CIN</label>
+        <span class="form-control">@Model.Cin</span>
+    </div>
+    <div class="form-group col-md-6">
+        <label>Major</label>
+        <span class="form-control">@Model.Major</span>
+    </div>
+    <div class="form-group col-12">
+        <label>Program Affiliation(s)</label>
+        <div class="form-control">
+            @foreach (var userProgram in Model.UserPrograms)
+            {
+                <span class="mr-3">@userProgram.Program.ShortName</span>
+            }
+        </div>
+    </div>
+</div>

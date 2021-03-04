@@ -39,6 +39,14 @@ namespace SciCAFE.NET.Controllers
             return View(_userService.GetUsers());
         }
 
+        public new IActionResult View(string id)
+        {
+            var user = _userService.GetUser(id);
+            if (user == null) return NotFound();
+
+            return View(user);
+        }
+
         [HttpGet]
         public IActionResult Add()
         {
